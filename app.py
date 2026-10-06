@@ -12,7 +12,7 @@ REGION_CODES = ("NSW", "VIC", "QLD", "SA", "WA", "TAS", "NT") # Gives regional c
 
 # Reads CSV file and returns a list of dictionaries, one for each row
 def read_csv_rows(filename):
-	path = os.path.join(BASE_DIR, filename)
+	path = os.path.join(BASE_DIR, "data", filename)
 	with open(path, encoding="utf-8-sig", newline="") as source:
 		reader = csv.reader(source)
 		headers = next(reader, [])
@@ -87,7 +87,7 @@ def matching_records(records):
 # homepage route - serves the index.html file to the frontend
 @app.route("/")
 def index():
-	return send_file(os.path.join(BASE_DIR, "index.html"))
+	return send_file(os.path.join(BASE_DIR, "templates","index.html"))
 
 # Artworks page
 @app.route("/api/works")
