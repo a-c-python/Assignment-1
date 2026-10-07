@@ -323,8 +323,7 @@ def overview():
 		founded_timeline.append({"year": year, "count": count, "total": total})
 	return json_response({
 		"placeCount": len(all_places),
-		"datedPlaceCount": sum(founded_by_year.values()),
-		"unrecordedFoundedCount": len(all_places) - sum(founded_by_year.values()),
+		"First Art Centre Founded": min(founded_by_year.values()),
 		"placesByState": places_by_state,
 		"foundedTimeline": founded_timeline,
 	})
