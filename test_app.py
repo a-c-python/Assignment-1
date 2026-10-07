@@ -77,6 +77,18 @@ def test_register_accepts_and_normalizes_optional_recovery_email(auth_client):
     assert user[0] == "example@email.com"
 
 
+def test_auth_session_cookie_uses_secure_attributes_by_default(auth_client):
+    response = auth_client.post(
+        "/api/register",
+        json={"username": "cookie_user", "password": "secure-password"},
+    )
+
+    cookie = response.headers["Set-Cookie"]
+    assert "Secure" in cookie
+    assert "HttpOnly" in cookie
+    assert "SameSite=Lax" in cookie
+
+
 def test_register_still_allows_account_without_recovery_email(auth_client):
     response = auth_client.post(
         "/api/register",
@@ -420,6 +432,7 @@ def test_filter_places_by_state(page):
     )
 
     page.goto("http://127.0.0.1:5000")
+    page.get_by_role("tab", name="Places").click()
 
     place_names = page.locator("#places-list .record-title")
 
