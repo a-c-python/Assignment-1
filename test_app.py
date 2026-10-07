@@ -257,7 +257,8 @@ def test_place_details_appear_when_clicked(page):
         "yearFounded": 2000,
         "website": "http://testplace.com",
     }
-    page.route("**/api/works", lambda route: route.fulfill(json=[]))
+
+    page.route("**/api/works", lambda route: route.fulfill(json=[])) # Puts test data in place for the test to use, so that the test can check if the place details are displayed correctly when clicked.
     page.route("**/api/places", lambda route: route.fulfill(json=[test_place]))
     page.route(
         "**/api/overview",
@@ -271,7 +272,7 @@ def test_place_details_appear_when_clicked(page):
     )
     page.route(
         "**/api/session",
-        lambda route: route.fulfill(json={"authenticated": False}),
+        lambda route: route.fulfill(json={"authenticated": False}), # User isn't logged in
     )
 
     page.goto("http://127.0.0.1:5000") # Tells the test to go to the app's main page.
@@ -339,8 +340,8 @@ def test_work_details_appear_when_clicked(page):
     }
 
     page.route("**/api/works", lambda route: route.fulfill(json=[test_work]))
-        page.route("**/api/places", lambda route: route.fulfill(json=[]))
-        page.route(
+    page.route("**/api/places", lambda route: route.fulfill(json=[]))
+    page.route(
             "**/api/overview",
             lambda route: route.fulfill(json={
                 "placeCount": 1,
@@ -350,7 +351,7 @@ def test_work_details_appear_when_clicked(page):
                 "foundedTimeline": [],
             }),
         )
-        page.route(
+    page.route(
             "**/api/session",
             lambda route: route.fulfill(json={"authenticated": False}),
         )
@@ -392,7 +393,63 @@ def test_work_details_appear_when_clicked(page):
 
 
 # Testing filter for collection by state
-def test_filter_places_by_state(auth_client,)
+def test_filter_places_by_state(page):
+    test_places = [
+        {"name": "Place A", "state": "WA"},
+        {"name": "Place B", "state": "NSW"},
+        {"name": "Place C", "state": "WA"},
+        {"name": "Place D", "state": "VIC"}
+        {"name": "Place E", "state": "NSW"}
+    ]
+
+    page.route("**/api/works", lambda route: route.fulfill(json=[]))
+    page.route("**/api/places", lambda route: route.fulfill(json=test_places))
+    page.route(
+        "**/api/overview",
+        lambda route: route.fulfill(json={
+            "placeCount": 5,
+            "datedPlaceCount": 0,
+            "unrecordedFoundedCount": 3,
+            "placesByState": {"WA": 2, "NSW": 2, "VIC": 1},
+            "foundedTimeline": [],
+        }),
+    )
+    page.route(
+        "**/api/session",
+        lambda route: route.fulfill(json={"authenticated": False}),
+    )
+
+    page.goto("http://127.0.0.1:5000")
+
+    place_names = page.locator("#places_names")
+
+    page.get_by_role("button", name="Western Australia").click()
+    assert place_names.locator("button", has_text="Place A").is_visible()
+    assert place_names.locator("button", has_text="Place C").is_visible()
+    assert place_names.locator("button", has_text="Place B").is_hidden()
+    assert place_names.locator("button", has_text="Place D").is_hidden()
+    assert place_names.locator("button", has_text="Place E").is_hidden()
+
+    page.get_by_role("button", name="New South Wales").click()
+    assert place_names.locator("button", has_text="Place B").is_visible()
+    assert place_names.locator("button", has_text="Place E").is_visible()
+    assert place_names.locator("button", has_text="Place A").is_hidden()
+    assert place_names.locator("button", has_text="Place C").is_hidden()
+    assert place_names.locator("button", has_text="Place D").is_hidden()    
+
+    page.get_by_role("button", name="Victoria").click()
+    assert place_names.locator("button", has_text="Place D").is_visible()   
+    assert place_names.locator("button", has_text="Place A").is_hidden()
+    assert place_names.locator("button", has_text="Place B").is_hidden()
+    assert place_names.locator("button", has_text="Place C").is_hidden()
+    assert place_names.locator("button", has_text="Place E").is_hidden()
+
+    page.get_by_role("button", name="Nationwide").click()
+    assert place_names.locator("button", has_text="Place A").is_visible()
+    assert place_names.locator("button", has_text="Place B").is_visible()   
+    assert place_names.locator("button", has_text="Place C").is_visible()
+    assert place_names.locator("button", has_text="Place D").is_visible()
+    assert place_names.locator("button", has_text="Place E").is_visible()
 
 # Testing filter for collection by type
 
