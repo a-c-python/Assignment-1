@@ -62,6 +62,7 @@
 		.auth-panel { display: flex; align-items: center; justify-content: flex-end; gap: 8px; }
 		.auth-panel form { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 6px; }
 		.auth-panel input { width: 132px; min-height: 34px; padding: 0 8px; border: 1px solid var(--line); }
+		.auth-panel input[type="email"] { width: 170px; }
 		.auth-panel button, .place-action { min-height: 34px; padding: 0 11px; border: 1px solid var(--forest); background: var(--forest); color: #fff; cursor: pointer; font-size: 11px; font-weight: 600; }
 		.auth-panel button:hover, .place-action:hover { background: #15392d; }
 		.auth-panel #logout-button, .place-action.secondary { background: transparent; color: var(--forest); }
@@ -224,8 +225,16 @@
 					<input id="username" name="username" autocomplete="username" placeholder="Username" minlength="3" maxlength="32" required>
 					<label class="sr-only" for="password">Password</label>
 					<input id="password" name="password" type="password" autocomplete="current-password" placeholder="Password" minlength="8" maxlength="128" required>
+					<label class="sr-only" for="recovery-email">Recovery email (optional)</label>
+					<input id="recovery-email" name="recovery_email" type="text" inputmode="email" autocomplete="email" autocapitalize="none" placeholder="Recovery email (optional)" maxlength="254">
 					<button type="submit" data-action="login">Log in</button>
 					<button type="submit" data-action="register">Create account</button>
+					<button type="button" id="forgot-password-button">Forgot password?</button>
+				</form>
+				<form id="reset-form" hidden>
+					<label class="sr-only" for="new-password">New password</label>
+					<input id="new-password" name="password" type="password" autocomplete="new-password" placeholder="New password" minlength="8" maxlength="128" required>
+					<button type="submit">Reset password</button>
 				</form>
 				<div id="account-panel" hidden>
 					<span id="account-name"></span>
@@ -385,12 +394,51 @@
 					body: JSON.stringify({
 						username: form.elements.username.value,
 						password: form.elements.password.value,
+						...(action === 'register' ? { recovery_email: form.elements.recovery_email.value } : {}),
 					}),
 				});
 				form.elements.password.value = '';
 				renderAccount(user);
 				await loadSavedPlaces();
 				message.textContent = `Signed in as ${user.username}.`;
+			} catch (error) {
+				message.textContent = error.message;
+			}
+		}
+
+		async function requestPasswordReset() {
+			const form = document.querySelector('#auth-form');
+			const message = document.querySelector('#auth-message');
+			message.textContent = '';
+			try {
+				const result = await requestJson('/api/forgot-password', {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({ email: form.elements.recovery_email.value }),
+				});
+				message.textContent = result.message;
+			} catch (error) {
+				message.textContent = error.message;
+			}
+		}
+
+		async function resetPassword(token) {
+			const form = document.querySelector('#reset-form');
+			const message = document.querySelector('#auth-message');
+			message.textContent = '';
+			try {
+				const result = await requestJson('/api/reset-password', {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({ token, password: form.elements.password.value }),
+				});
+				form.hidden = true;
+				document.querySelector('#auth-form').hidden = false;
+				form.elements.password.value = '';
+				const url = new URL(window.location.href);
+				url.searchParams.delete('reset_token');
+				window.history.replaceState({}, '', url);
+				message.textContent = result.message;
 			} catch (error) {
 				message.textContent = error.message;
 			}
@@ -421,7 +469,7 @@
 			const matches = works.filter((work) => Object.values(work).join(' ').toLocaleLowerCase().includes(normalized));
 			const list = document.querySelector('#works-list');
 			list.replaceChildren();
-			document.querySelector('#works-count').textContent = `${matches.length} / ${works.length}`;
+			document.querySelector('#works-count').textContent = `${matches.length} / ${works.length} works`;
 			if (!matches.length) {
 				list.innerHTML = '<div class="empty-state">No works match that search.</div>';
 				return;
@@ -738,6 +786,16 @@
 		document.querySelector('#auth-form').addEventListener('submit', (event) => {
 			event.preventDefault();
 			authenticate(event.submitter?.dataset.action === 'register' ? 'register' : 'login');
+		});
+		document.querySelector('#forgot-password-button').addEventListener('click', requestPasswordReset);
+		const resetToken = new URLSearchParams(window.location.search).get('reset_token');
+		if (resetToken) {
+			document.querySelector('#auth-form').hidden = true;
+			document.querySelector('#reset-form').hidden = false;
+		}
+		document.querySelector('#reset-form').addEventListener('submit', (event) => {
+			event.preventDefault();
+			resetPassword(resetToken);
 		});
 		document.querySelector('#logout-button').addEventListener('click', async () => {
 			try {
