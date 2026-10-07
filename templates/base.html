@@ -190,7 +190,7 @@
 		.timeline-year { display: block; color: var(--forest); font-size: 11px; font-weight: 700; }
 		.timeline-count { display: block; margin-top: 4px; color: var(--muted); font-size: 11px; }
 		.status { min-height: 20px; margin: 14px 0 0; color: var(--muted); font-size: 11px; }
-		footer { display: flex; justify-content: space-between; gap: 12px; margin-top: 22px; padding-top: 13px; border-top: 1px solid var(--line); color: var(--muted); font-size: 10px; }
+		footer { display: flex; justify-content: space-between; gap: 12px; margin-top: 22px; padding-top: 13px; border-top: 1px solid var(--line); color: var(--muted); font-size: 10px; flex-direction: column;}
 		@media (max-width: 760px) {
 			.shell { padding: 0 18px 32px; }
 			.masthead { min-height: 81px; flex-wrap: wrap; }
@@ -581,7 +581,7 @@
 			rule.className = 'detail-rule';
 			const grid = document.createElement('div');
 			grid.className = 'detail-grid';
-			grid.append(
+			grid.append(	// place - detailed information
 				field('Address', place.address, true),
 				field('Category', place.category),
 				field('Aboriginal group', place.aboriginalGroup),
@@ -589,9 +589,12 @@
 				field('Indigenous owned and run', place.aboriginalOwned),
 				field('Type of interaction', place.interactions),
 				field('Year founded', place.yearFounded),
-				field('Listed source', place.source, true),
-				field('Associated with', place.associatedWith, true),
+				field('Sourced at', place.source, true),
 			);
+			if (place.associatedWith?.trim()) {
+   			 grid.append(field('Associated with', place.associatedWith, true));
+			}
+
 			if (place.website && /^https?:\/\//i.test(place.website)) {
 				const websiteField = document.createElement('div');
 				websiteField.className = 'field-wide';
@@ -729,7 +732,7 @@
 			});
 			document.querySelector('#archive-note').textContent = data.unrecordedFoundedCount
 				? `${data.unrecordedFoundedCount} places have no recognizable founding year in the source CSV and are not plotted.`
-				: 'Founding totals are cumulative; yearly additions are shown in the timeline.';
+				: 'Founding totals are cumulative; yearly additions are shown in the graph. Note: Institutions that have shutdown or are not in our dataset are not included';
 		}
 
 		const worksSearch = document.querySelector('#works-search');
