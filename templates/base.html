@@ -190,6 +190,7 @@
 		.timeline-year { display: block; color: var(--forest); font-size: 11px; font-weight: 700; }
 		.timeline-count { display: block; margin-top: 4px; color: var(--muted); font-size: 11px; }
 		.status { min-height: 20px; margin: 14px 0 0; color: var(--muted); font-size: 11px; }
+		#archive-note {white-space: pre-line;}
 		footer { display: flex; justify-content: space-between; gap: 12px; margin-top: 22px; padding-top: 13px; border-top: 1px solid var(--line); color: var(--muted); font-size: 10px; flex-direction: column;}
 		@media (max-width: 760px) {
 			.shell { padding: 0 18px 32px; }
@@ -732,7 +733,7 @@
 			});
 			document.querySelector('#archive-note').textContent = data.unrecordedFoundedCount
 				? `${data.unrecordedFoundedCount} places have no recognizable founding year in the source CSV and are not plotted.`
-				: 'Founding totals are cumulative; yearly additions are shown in the graph. Note: Institutions that have shutdown or are not in our dataset are not included';
+				: 'Founding totals are cumulative; yearly additions are shown in the graph. \nNote: Institutions that have shutdown or are not in our dataset are not included';
 		}
 
 		const worksSearch = document.querySelector('#works-search');
