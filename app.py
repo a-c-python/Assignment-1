@@ -13,7 +13,7 @@ from email.message import EmailMessage
 from urllib.parse import quote, urlsplit
 
 # Import flask modules - web application framework
-from flask import Flask, jsonify, request, send_file, session
+from flask import Flask, jsonify, render_template, request, session
 from werkzeug.security import check_password_hash, generate_password_hash
 
 app = Flask("__name__")	# Creates app
@@ -253,10 +253,29 @@ def matching_records(records):
 	]
 
 # Flask routes - these are the endpoints that the frontend will use to access the data from the backend. The frontend will make requests to these endpoints and receive the data in json format.
-# homepage route - serves the index.html file to the frontend
+# Pages
 @app.route("/")
-def index():
-	return send_file(os.path.join(BASE_DIR, "templates","index.html"))
+@app.route("/works")
+def works_page():
+	return render_template("works.html", active_page="works")
+
+
+@app.route("/places")
+def places_page():
+	return render_template("places.html", active_page="places")
+
+
+@app.route("/archive")
+def archive_page():
+	return render_template("archive.html", active_page="archive")
+
+@app.route("/login")
+def login_page():
+	return render_template("login.html", active_page="login")
+
+@app.route("/mylists")
+def mylists_page():
+	return render_template("mylists.html", active_page="mylists")
 
 # Artworks page
 @app.route("/api/works")

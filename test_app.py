@@ -3,9 +3,11 @@ import csv
 import hashlib
 from re import search
 import sqlite3
+from threading import Thread
 from urllib import response
 import pytest
 import app
+from werkzeug.serving import make_server
 
 # Testing incomplete csv entries
 @pytest.mark.parametrize(
@@ -75,8 +77,39 @@ def test_login_failure_incorrect_password(auth_client):
     assert response.get_json() == {"error": "Invalid username or password."}
 
 # Testing Data retrival Place (clicking a place to view more information about it)
-def test_place_details_appear_when_clicked(page):
-    test_place = {
+@pytest.fixture             # Tells the test to use a fixture, which is a reusable piece of code that sets up the test environment.
+def app_url():
+    server = make_server("127.0.0.1", 0, app.app, threaded=True)
+    server_thread = Thread(target=server.serve_forever)
+    server_thread.start()
+    try:
+        yield f"http://127.0.0.1:{server.server_port}"  # Tells the test to open the app in a web browser at the specified URL.
+    finally:
+        server.shutdown()                               # Tells the test to shut down the server after the test is complete.
+        server_thread.join()                            # Tells the test to wait for the server thread to finish before continuing.
+
+
+@pytest.mark.parametrize(
+    ("path", "panel_id"),
+    [
+        ("/", "panel-works"),
+        ("/works", "panel-works"),
+        ("/places", "panel-places"),
+        ("/archive", "panel-archive"),
+    ],
+)
+def test_catalogue_sections_render_as_separate_pages(path, panel_id):
+    response = app.app.test_client().get(path)
+
+    assert response.status_code == 200
+    page = response.get_data(as_text=True)
+    assert "<!doctype html>" in page.lower()
+    assert f'id="{panel_id}"' in page
+    assert page.count('class="panel"') == 1
+
+
+def test_place_details_appear_when_clicked(page, app_url):
+    test_place = {                                  # Sets up a test place with various attributes to be used in the test.
         "name": "Test Place",
         "address": "123 Test St",
         "category": "Museum",
@@ -84,7 +117,7 @@ def test_place_details_appear_when_clicked(page):
         "aboriginalGroup": "Test Group",
         "exclusiveContent": True,
         "aboriginalOwned": False,
-        "listedSource": "ACH",
+        "source": "ACH",
         "interactions": "engage",
         "yearFounded": 2000,
         "website": "http://testplace.com",
@@ -107,7 +140,8 @@ def test_place_details_appear_when_clicked(page):
         lambda route: route.fulfill(json={"authenticated": False}), # User isn't logged in
     )
 
-    page.goto("http://127.0.0.1:5000") # Tells the test to go to the app's main page.
+    page.goto(app_url) # Tells the test to go to the app's main page.
+    page.get_by_role("link", name="Places").click()
     page.get_by_role("button", name="Test Place").click() # Tells the test to click the button for the place named "Test Place".
     
     details = page.locator("#place-detail")
@@ -130,12 +164,12 @@ def test_place_details_appear_when_clicked(page):
     indigenous_content= details.locator(".detail-grid > div").filter(
     has_text="Indigenous exclusive content"
     )
-    assert indigenous_content.locator(".field-value").inner_text() == "True"
+    assert indigenous_content.locator(".field-value").inner_text() == "true"
 
     aboriginal_owned = details.locator(".detail-grid > div").filter(
     has_text="Indigenous owned and run"
     )
-    assert aboriginal_owned.locator(".field-value").inner_text() == "False"
+    assert aboriginal_owned.locator(".field-value").inner_text() == "false"
 
     interaction = details.locator(".detail-grid > div").filter(
     has_text="Type of interaction"
@@ -159,16 +193,16 @@ def test_place_details_appear_when_clicked(page):
     assert website.locator(".field-value").inner_text() == "http://testplace.com"
 
 # Testing Data retrival Work (clicking a work to view more information about it)
-def test_work_details_appear_when_clicked(page):
+def test_work_details_appear_when_clicked(page, app_url):
     test_work = {
-        "name": "Test Work",
-        "type of work": "Artefact",
-        "aboriginal heritage": "Unknown",
-        "work medium": "egg",
-        "aboriginal group location": "WA",
-        "date created": "c.1880",
+        "title": "Test Work",
+        "type": "Artefact",
+        "heritage": "Unknown",
+        "medium": "egg",
+        "groupLocationAndState": "WA",
+        "dateCreated": "c.1880",
         "collection": "The State Art Collection, The Art Gallery of Western Australia",
-        "where the work is housed": "The Art Gallery of Western Australia",
+        "housedAt": "The Art Gallery of Western Australia",
     }
 
     page.route("**/api/works", lambda route: route.fulfill(json=[test_work]))
@@ -188,7 +222,7 @@ def test_work_details_appear_when_clicked(page):
             lambda route: route.fulfill(json={"authenticated": False}),
         )
 
-    page.goto("http://127.0.0.1:5000") # Tells the test to go to the app's main page.
+    page.goto(app_url) # Tells the test to go to the app's main page.
     page.get_by_role("button", name="Test Work").click() # Tells the test to click the button for the work named "Test Work".
 
     details = page.locator("#work-detail")
@@ -225,7 +259,7 @@ def test_work_details_appear_when_clicked(page):
 
 
 # Testing filter for collection by state
-def test_filter_places_by_state(page):
+def test_filter_places_by_state(page, app_url):
     test_places = [
         {"name": "Place A", "state": "WA"},
         {"name": "Place B", "state": "NSW"},
@@ -251,8 +285,8 @@ def test_filter_places_by_state(page):
         lambda route: route.fulfill(json={"authenticated": False}),
     )
 
-    page.goto("http://127.0.0.1:5000")
-    page.get_by_role("tab", name="Places").click()
+    page.goto(app_url)
+    page.get_by_role("link", name="Places").click()
 
     place_names = page.locator("#places-list .record-title")
 
@@ -269,7 +303,7 @@ def test_filter_places_by_state(page):
     assert sorted(place_names.all_text_contents()) == ["Place A", "Place B", "Place C", "Place D", "Place E"]
 
 # Testing searchbar in works
-def test_works_searchbar(page):
+def test_works_searchbar(page, app_url):
     test_type = [
         {"title": "Work A", "author": "Author A", "type": "Painting", "heritage": "Heritage A", "group location": "Location A", "medium": "paint on canvas", "date_made": "2020", "collection": "Collection A", "where_housed": "Place A"},
         {"title": "Work B", "author": "Author B", "type": "Sculpture", "heritage": "Heritage B", "group location": "Location B", "medium": "stone", "date_made": "2019", "collection": "Collection B", "where_housed": "Place B"},
@@ -292,8 +326,8 @@ def test_works_searchbar(page):
     )
     page.route( "**/api/session", lambda route: route.fulfill(json={"authenticated": False}))
 
-    page.goto("http://127.0.0.1:5000")
-    page.get_by_role("tab", name="Works").click()
+    page.goto(app_url)
+    page.get_by_role("link", name="Works").click()
 
     work_titles = page.locator("#works-list .record-title")
     work_titles.first.wait_for()
@@ -527,3 +561,7 @@ def test_database_initialization_migrates_existing_users_table(tmp_path, monkeyp
     with sqlite3.connect(database_path) as connection:
         columns = {row[1] for row in connection.execute("PRAGMA table_info(users)")}
     assert "recovery_email" in columns
+
+
+if __name__ == "__main__":
+    raise SystemExit(pytest.main([__file__]))

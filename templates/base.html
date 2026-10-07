@@ -4,7 +4,7 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta name="theme-color" content="#f4f2e9">
-	<title>Country & Collection | Indigenous Art Finder</title>
+	<title>{% block title %}Country &amp; Collection | Indigenous Art Finder{% endblock %}</title>
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,500;6..72,600&display=swap" rel="stylesheet">
@@ -86,8 +86,9 @@
 			font-weight: 600;
 		}
 		.tab span { margin-right: 9px; color: var(--ochre); font-size: 10px; }
-		.tab[aria-selected="true"] { color: var(--forest); }
-		.tab[aria-selected="true"]::after { position: absolute; right: 12px; bottom: -1px; left: 12px; height: 3px; background: var(--forest); content: ""; }
+		.tab { display: inline-flex; align-items: center; text-decoration: none; }
+		.tab[aria-current="page"] { color: var(--forest); }
+		.tab[aria-current="page"]::after { position: absolute; right: 12px; bottom: -1px; left: 12px; height: 3px; background: var(--forest); content: ""; }
 		.panel { padding-top: 22px; }
 		[hidden] { display: none !important; }
 		.section-head { display: flex; align-items: end; justify-content: space-between; gap: 18px; margin-bottom: 15px; }
@@ -225,11 +226,15 @@
 					<input id="username" name="username" autocomplete="username" placeholder="Username" minlength="3" maxlength="32" required>
 					<label class="sr-only" for="password">Password</label>
 					<input id="password" name="password" type="password" autocomplete="current-password" placeholder="Password" minlength="8" maxlength="128" required>
-					<label class="sr-only" for="recovery-email">Recovery email (optional)</label>
-					<input id="recovery-email" name="recovery_email" type="text" inputmode="email" autocomplete="email" autocapitalize="none" placeholder="Recovery email (optional)" maxlength="254">
+					<div id="recovery-email-field" hidden>
+						<label class="sr-only" for="recovery-email">Recovery email (optional)</label>
+						<input id="recovery-email" name="recovery_email" type="text" inputmode="email" autocomplete="email" autocapitalize="none" placeholder="Recovery email (optional)" maxlength="254">
+					</div>
 					<button type="submit" data-action="login">Log in</button>
-					<button type="submit" data-action="register">Create account</button>
-					<button type="button" id="forgot-password-button">Forgot password?</button>
+					<button type="button" id="show-register-button">Create account</button>
+					<button type="submit" data-action="register" id="register-submit-button" hidden>Create account</button>
+					<button type="button" id="cancel-register-button" hidden>Cancel</button>
+					<button type="button" id="forgot-password-button" hidden>Forgot password?</button>
 				</form>
 				<form id="reset-form" hidden>
 					<label class="sr-only" for="new-password">New password</label>
@@ -253,78 +258,13 @@
 				<p class="intro-copy">Browse works and cultural places, then follow the collection through time and across Australia.</p>
 			</section>
 
-			<nav class="tabs" role="tablist" aria-label="Catalogue sections">
-				<button class="tab" id="tab-works" type="button" role="tab" aria-controls="panel-works" aria-selected="true"><span>01</span>Works</button>
-				<button class="tab" id="tab-places" type="button" role="tab" aria-controls="panel-places" aria-selected="false"><span>02</span>Places</button>
-				<button class="tab" id="tab-archive" type="button" role="tab" aria-controls="panel-archive" aria-selected="false"><span>03</span>Graphs &amp; timeline</button>
+			<nav class="tabs" aria-label="Catalogue sections">
+				<a class="tab" href="{{ url_for('works_page') }}" {% if active_page == 'works' %}aria-current="page"{% endif %}><span>01</span>Works</a>
+				<a class="tab" href="{{ url_for('places_page') }}" {% if active_page == 'places' %}aria-current="page"{% endif %}><span>02</span>Places</a>
+				<a class="tab" href="{{ url_for('archive_page') }}" {% if active_page == 'archive' %}aria-current="page"{% endif %}><span>03</span>Graphs &amp; timeline</a>
 			</nav>
 
-			<section class="panel" id="panel-works" role="tabpanel" aria-labelledby="tab-works">
-				<div class="section-head">
-					<h2>Collection works</h2>
-					<div class="section-meta" id="works-summary">Loading collection…</div>
-				</div>
-				<div class="workspace">
-					<div class="browse-column">
-						<div class="browse-toolbar">
-							<label class="search-wrap">
-								<span class="sr-only" hidden>Search works by title, author, medium or group</span>
-								<input class="search" id="works-search" type="search" placeholder="Search title, author, medium…" autocomplete="off" aria-label="Search works by title, author, medium or group">
-							</label>
-							<div class="browse-count"><span>WORKS &amp; AUTHORS</span><span id="works-count"></span></div>
-						</div>
-						<div class="record-list" id="works-list" aria-label="Works"></div>
-					</div>
-					<article class="detail" id="work-detail" aria-live="polite">
-						<div class="placeholder"><p>Select a work to see its collection record, cultural context and current location.</p></div>
-					</article>
-				</div>
-			</section>
-
-			<section class="panel" id="panel-places" role="tabpanel" aria-labelledby="tab-places" hidden>
-				<div class="section-head">
-					<h2>Cultural places</h2>
-					<div class="section-meta" id="places-summary">Browse places to visit, learn and engage</div>
-				</div>
-				<div class="workspace">
-					<div class="browse-column">
-						<div class="browse-toolbar">
-							<label class="search-wrap">
-								<input class="search" id="places-search" type="search" placeholder="Search place, state, group…" autocomplete="off" aria-label="Search places by name, state, or group">
-							</label>
-							<div class="region-filters" id="region-filters" aria-label="Filter places by state"></div>
-							<div class="region-filters">
-								<button class="region-button" id="saved-places-filter" type="button" aria-pressed="false" disabled>My saved places</button>
-							</div>
-							<div class="browse-count"><span>PLACES</span><span id="places-count"></span></div>
-						</div>
-						<div class="record-list" id="places-list" aria-label="Cultural places"></div>
-					</div>
-					<article class="detail" id="place-detail" aria-live="polite">
-						<div class="placeholder"><p>Select a place to see its address, community details and visitor information.</p></div>
-					</article>
-				</div>
-			</section>
-
-			<section class="panel" id="panel-archive" role="tabpanel" aria-labelledby="tab-archive" hidden>
-				<div class="section-head">
-					<h2>Indigenous Art Centres in Australia</h2>
-					<div class="section-meta">Founding years and locations by state</div>
-				</div>
-				<div class="analytics-top" id="metrics"></div>
-				<div class="analytics-grid">
-					<section class="chart-panel" aria-labelledby="founded-chart-title">
-						<h3 id="founded-chart-title">Places founded over time</h3>
-						<div id="founded-chart" aria-label="Cumulative line graph of places founded by year"></div>
-						<div class="timeline-list" id="timeline" aria-label="Founding timeline"></div>
-					</section>
-					<section class="chart-panel" aria-labelledby="state-chart-title">
-						<h3 id="state-chart-title">Locations by state</h3>
-						<div class="bar-list" id="state-chart"></div>
-					</section>
-				</div>
-				<p class="status" id="archive-note"></p>
-			</section>
+			{% block page_content %}{% endblock %}
 			<p class="status" id="app-status" role="status"></p>
 		</main>
 
@@ -335,13 +275,12 @@
 	</div>
 
 	<script>
-		const panels = [...document.querySelectorAll('[role="tabpanel"]')];
-		const tabs = [...document.querySelectorAll('[role="tab"]')];
 		const status = document.querySelector('#app-status');
 		let works = [];
 		let places = [];
 		let savedPlaceNames = new Set();
 		let currentUsername = null;
+		let loginFailed = false;
 		let showingSavedPlaces = false;
 		let selectedPlaceState = 'ALL';
 		const regions = [
@@ -357,8 +296,21 @@
 		async function requestJson(url, options = {}) {
 			const response = await fetch(url, options);
 			const payload = await response.json();
-			if (!response.ok) throw new Error(payload.error || 'The request could not be completed.');
+			if (!response.ok) {
+				const error = new Error(payload.error || 'The request could not be completed.');
+				error.status = response.status;
+				throw error;
+			}
 			return payload;
+		}
+
+		function setRegistrationMode(enabled) {
+			document.querySelector('[data-action="login"]').hidden = enabled;
+			document.querySelector('#show-register-button').hidden = enabled;
+			document.querySelector('#register-submit-button').hidden = !enabled;
+			document.querySelector('#cancel-register-button').hidden = !enabled;
+			document.querySelector('#recovery-email-field').hidden = !enabled && !loginFailed;
+			document.querySelector('#forgot-password-button').hidden = !loginFailed;
 		}
 
 		function renderAccount(user) {
@@ -366,12 +318,19 @@
 			document.querySelector('#auth-form').hidden = Boolean(currentUsername);
 			document.querySelector('#account-panel').hidden = !currentUsername;
 			document.querySelector('#account-name').textContent = currentUsername ? `Signed in as ${currentUsername}` : '';
-			document.querySelector('#saved-places-filter').disabled = !currentUsername;
+			if (currentUsername) {
+				loginFailed = false;
+				setRegistrationMode(false);
+			}
+			const savedPlacesFilter = document.querySelector('#saved-places-filter');
+			if (savedPlacesFilter) savedPlacesFilter.disabled = !currentUsername;
 			if (!currentUsername) {
 				savedPlaceNames.clear();
 				showingSavedPlaces = false;
-				document.querySelector('#saved-places-filter').setAttribute('aria-pressed', 'false');
-				renderPlaceList(document.querySelector('#places-search').value);
+				if (savedPlacesFilter) {
+					savedPlacesFilter.setAttribute('aria-pressed', 'false');
+					renderPlaceList(document.querySelector('#places-search').value);
+				}
 			}
 		}
 
@@ -399,9 +358,14 @@
 				});
 				form.elements.password.value = '';
 				renderAccount(user);
-				await loadSavedPlaces();
+				if (placesSearch) await loadSavedPlaces();
 				message.textContent = `Signed in as ${user.username}.`;
 			} catch (error) {
+				if (action === 'login' && error.status === 401) {
+					loginFailed = true;
+					document.querySelector('#recovery-email-field').hidden = false;
+					document.querySelector('#forgot-password-button').hidden = false;
+				}
 				message.textContent = error.message;
 			}
 		}
@@ -456,13 +420,6 @@
 			wrapper.append(heading, content);
 			return wrapper;
 		}
-
-		function showTab(tab) {
-			tabs.forEach((button) => button.setAttribute('aria-selected', String(button === tab)));
-			panels.forEach((panel) => { panel.hidden = panel.id !== tab.getAttribute('aria-controls'); });
-		}
-
-		tabs.forEach((tab) => tab.addEventListener('click', () => showTab(tab)));
 
 		function renderWorkList(query = '') {
 			const normalized = query.trim().toLocaleLowerCase();
@@ -776,9 +733,12 @@
 				: 'Founding totals are cumulative; yearly additions are shown in the timeline.';
 		}
 
-		document.querySelector('#works-search').addEventListener('input', (event) => renderWorkList(event.target.value));
-		document.querySelector('#places-search').addEventListener('input', (event) => renderPlaceList(event.target.value));
-		document.querySelector('#saved-places-filter').addEventListener('click', (event) => {
+		const worksSearch = document.querySelector('#works-search');
+		if (worksSearch) worksSearch.addEventListener('input', (event) => renderWorkList(event.target.value));
+		const placesSearch = document.querySelector('#places-search');
+		if (placesSearch) placesSearch.addEventListener('input', (event) => renderPlaceList(event.target.value));
+		const savedPlacesFilter = document.querySelector('#saved-places-filter');
+		if (savedPlacesFilter) savedPlacesFilter.addEventListener('click', (event) => {
 			showingSavedPlaces = !showingSavedPlaces;
 			event.currentTarget.setAttribute('aria-pressed', String(showingSavedPlaces));
 			renderPlaceList(document.querySelector('#places-search').value);
@@ -786,6 +746,15 @@
 		document.querySelector('#auth-form').addEventListener('submit', (event) => {
 			event.preventDefault();
 			authenticate(event.submitter?.dataset.action === 'register' ? 'register' : 'login');
+		});
+		document.querySelector('#show-register-button').addEventListener('click', () => {
+			loginFailed = false;
+			setRegistrationMode(true);
+			document.querySelector('#auth-message').textContent = '';
+		});
+		document.querySelector('#cancel-register-button').addEventListener('click', () => {
+			setRegistrationMode(false);
+			document.querySelector('#auth-message').textContent = '';
 		});
 		document.querySelector('#forgot-password-button').addEventListener('click', requestPasswordReset);
 		const resetToken = new URLSearchParams(window.location.search).get('reset_token');
@@ -809,16 +778,26 @@
 
 		async function loadCatalogue() {
 			try {
-				const responses = await Promise.all(['/api/works', '/api/places', '/api/overview'].map((url) => fetch(url)));
-				if (responses.some((response) => !response.ok)) throw new Error('A catalogue endpoint could not be loaded.');
-				[works, places] = await Promise.all(responses.slice(0, 2).map((response) => response.json()));
-				const overview = await responses[2].json();
-				document.querySelector('#works-summary').textContent = `${works.length} works in the catalogue`;
-				document.querySelector('#places-summary').textContent = `${places.length} cultural places in the catalogue`;
-				renderWorkList();
-				renderRegionFilters();
-				renderPlaceList();
-				renderOverview(overview);
+				if (worksSearch) {
+					const response = await fetch('/api/works');
+					if (!response.ok) throw new Error('The works catalogue could not be loaded.');
+					works = await response.json();
+					document.querySelector('#works-summary').textContent = `${works.length} works in the catalogue`;
+					renderWorkList();
+				}
+				if (placesSearch) {
+					const response = await fetch('/api/places');
+					if (!response.ok) throw new Error('The places catalogue could not be loaded.');
+					places = await response.json();
+					document.querySelector('#places-summary').textContent = `${places.length} cultural places in the catalogue`;
+					renderRegionFilters();
+					renderPlaceList();
+				}
+				if (document.querySelector('#metrics')) {
+					const response = await fetch('/api/overview');
+					if (!response.ok) throw new Error('The catalogue overview could not be loaded.');
+					renderOverview(await response.json());
+				}
 			} catch (error) {
 				status.textContent = `${error.message} Start the application with python main.py.`;
 			}
@@ -828,7 +807,7 @@
 			try {
 				const user = await requestJson('/api/session');
 				renderAccount(user.authenticated ? user : null);
-				if (user.authenticated) await loadSavedPlaces();
+				if (user.authenticated && placesSearch) await loadSavedPlaces();
 			} catch (error) {
 				document.querySelector('#auth-message').textContent = error.message;
 			}
