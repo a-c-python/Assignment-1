@@ -268,23 +268,86 @@ def test_retrieve_work_details(auth_client, tmp_path, monkeypatch):
     assert work_details["author"] == "Test Author"
 
 def test_place_details_appear_when_clicked(page):
+    test_place = {
+        "name": "Test Place",
+        "address": "123 Test St",
+        "category": "Museum",
+        "state": "Test State",
+        "aboriginalGroup": "Test Group",
+        "exclusiveContent": True,
+        "aboriginalOwned": False,
+        "listedSource": "ACH",
+        "interactions": "engage",
+        "yearFounded": 2000,
+        "website": "http://testplace.com",
+    }
+    page.route("**/api/works", lambda route: route.fulfill(json=[]))
+    page.route("**/api/places", lambda route: route.fulfill(json=[test_place]))
+    page.route(
+        "**/api/overview",
+        lambda route: route.fulfill(json={
+            "placeCount": 1,
+            "datedPlaceCount": 0,
+            "unrecordedFoundedCount": 1,
+            "placesByState": {},
+            "foundedTimeline": [],
+        }),
+    )
+    page.route(
+        "**/api/session",
+        lambda route: route.fulfill(json={"authenticated": False}),
+    )
+
     page.goto("http://127.0.0.1:5000") # Tells the test to go to the app's main page.
     page.get_by_role("button", name="Test Place").click() # Tells the test to click the button for the place named "Test Place".
+   
+    address = details.locator(".detail-grid > div").filter(
+    has_text="Address"
+    )
+    assert address.locator(".field-value").inner_text() == "123 Test St"
 
-    # Assert: verify the details panel shows the place's information.
-    details = page.locator("#place-detail")
-    assert "Address" in details.inner_text()
-    assert "Category" in details.inner_text()
-    assert "Aboriginal group" in details.inner_text()
-    assert "Indigenous exclusive content" in details.inner_text()
-    assert "Indigenous owned and run" in details.inner_text()
-    assert "Type of interaction" in details.inner_text()
-    assert "Year founded" in details.inner_text()
-    assert "Website" in details.inner_text()
+    category = details.locator(".detail-grid > div").filter(
+    has_text="Category"
+    )
+    assert category.locator(".field-value").inner_text() == "Museum"
+
+    group = details.locator(".detail-grid > div").filter(
+    has_text="Aboriginal group"
+    )
+    assert group.locator(".field-value").inner_text() == "Test Group"
+
+    indigenous_content= details.locator(".detail-grid > div").filter(
+    has_text="Indigenous exclusive content"
+    )
+    assert indigenous_content.locator(".field-value").inner_text() == "True"
+
+    aboriginal_owned = details.locator(".detail-grid > div").filter(
+    has_text="Indigenous owned and run"
+    )
+    assert aboriginal_owned.locator(".field-value").inner_text() == "False"
+
+    interaction = details.locator(".detail-grid > div").filter(
+    has_text="Type of interaction"
+    )
+    assert interaction.locator(".field-value").inner_text() == "engage"
+
+    year_founded = details.locator(".detail-grid > div").filter(
+    has_text="Year founded"
+    )
+    assert year_founded.locator(".field-value").inner_text() == "2000"
+
+    listed_source = details.locator(".detail-grid > div").filter(
+    has_text="Listed source"
+    )
+    assert listed_source.locator(".field-value").inner_text() == ""
 
 
+    website = details.locator(".detail-grid > div").filter(
+    has_text="Website"
+    )
+    assert website.locator(".field-value").inner_text() == "http://testplace.com
 
-
+      
 
 # Testing filter for collection by state
 def test_filter_places_by_state(auth_client,)
