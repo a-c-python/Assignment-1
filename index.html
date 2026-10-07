@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Country & Collection | Indigenous Art Finder</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Newsreader:wght@500;600&display=swap" rel="stylesheet">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- HEADER -->
+    <header>
+        <div>
+            <div class="brand">Country & Collection</div>
+            <div class="subtitle">
+                INDIGENOUS ART FINDER · AUSTRALIA
+            </div>
+        </div>
+
+        <p>
+            Art, places and cultural collections<br>
+            across Australia
+        </p>
+    </header>
+
+
+    <!-- INTRO -->
+    <div class="intro">
+        <small>EXPLORE THE COLLECTION</small>
+
+        <h1>Art, Place & Story</h1>
+
+        <p>
+            Explore Indigenous artworks, cultural places and the
+            development of art centres across Australia.
+        </p>
+    </div>
+
+
+    <!-- NAVIGATION -->
+    <nav class="tabs">
+
+        <button
+            class="tab active"
+            onclick="showPage('collections',this)">
+            01 Collections
+        </button>
+
+        <button
+            class="tab"
+            onclick="showPage('places',this)">
+            02 Places
+        </button>
+
+        <button
+            class="tab"
+            onclick="showPage('time',this)">
+            03 Art Centres Over Time
+        </button>
+
+    </nav>
+
+
+    <!-- COLLECTIONS -->
+    <section id="collections">
+
+        <h2>Collection Works</h2>
+
+        <div class="workspace">
+
+            <div class="sidebar">
+
+                <div class="toolbar">
+
+                    <input
+                        id="workSearch"
+                        placeholder="Search artworks..."
+                        oninput="searchWorks()">
+
+                </div>
+
+                <div
+                    class="list"
+                    id="workList">
+                </div>
+
+            </div>
+
+
+            <div
+                class="detail"
+                id="workDetail">
+
+                <h2>Select an artwork</h2>
+
+                <p class="author">
+                    Choose a work from the list to see its information.
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- PLACES -->
+    <section id="places" class="hidden">
+
+        <h2>Cultural Places</h2>
+
+        <div class="workspace">
+
+            <div class="sidebar">
+
+                <div class="toolbar">
+
+                    <input
+                        id="placeSearch"
+                        placeholder="Search places..."
+                        oninput="searchPlaces()">
+
+                    <div
+                        class="filters"
+                        id="stateFilters">
+                    </div>
+
+                </div>
+
+                <div
+                    class="list"
+                    id="placeList">
+                </div>
+
+            </div>
+
+
+            <div
+                class="detail"
+                id="placeDetail">
+
+                <h2>Select a place</h2>
+
+                <p class="author">
+                    Choose a place to see its information.
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ART CENTRES OVER TIME -->
+    <section id="time" class="hidden">
+
+        <h2>Indigenous Art Centres in Australia</h2>
+
+        <div
+            class="metrics"
+            id="metrics">
+        </div>
+
+
+        <div class="charts">
+
+            <div class="chart">
+
+                <h3>Places by State</h3>
+
+                <div id="stateChart"></div>
+
+            </div>
+
+
+            <div class="chart">
+
+                <h3>Art Centres Over Time</h3>
+
+                <svg
+                    class="line"
+                    viewBox="0 0 500 220"
+                    id="lineChart">
+                </svg>
+
+                <div id="timeline"></div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- FOOTER -->
+    <footer>
+        Country & Collection · Indigenous Art Finder
+    </footer>
+
+</div>
+
+
+<!-- JavaScript -->
+<script src="script.js"></script>
+
+</body>
+</html>
