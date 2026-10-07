@@ -253,8 +253,7 @@ def matching_records(records):
 	]
 
 # Flask routes - these are the endpoints that the frontend will use to access the data from the backend. The frontend will make requests to these endpoints and receive the data in json format.
-# Pages
-@app.route("/")
+# Pages - tells the page where to find the html files for each page and what the active page is (for the navigation bar)
 @app.route("/works")
 def works_page():
 	return render_template("works.html", active_page="works")
@@ -273,9 +272,22 @@ def archive_page():
 def login_page():
 	return render_template("login.html", active_page="login")
 
+
+@app.route("/registration")
+def registration_page():
+	return render_template("registration.html", active_page="registration")
+
+
 @app.route("/mylists")
 def mylists_page():
-	return render_template("mylists.html", active_page="mylists")
+	user_id = current_user_id()
+	saved_places = saved_places_for_user(user_id) if user_id is not None else []
+	return render_template(
+		"mylists.html",
+		active_page="mylists",
+		is_authenticated=user_id is not None,
+		saved_places=saved_places,
+	)
 
 # Artworks page
 @app.route("/api/works")
@@ -311,6 +323,8 @@ def overview():
 		"placesByState": places_by_state,
 		"foundedTimeline": founded_timeline,
 	})
+
+#
 
 @app.route("/api/session")
 def session_status():
