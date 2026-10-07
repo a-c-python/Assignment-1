@@ -699,7 +699,7 @@
 			const metrics = document.querySelector('#metrics');
 			metrics.replaceChildren();
 			const statesWithPlaces = Object.values(data.placesByState).filter((count) => count > 0).length;
-			[['Art centres & places', data.placeCount], ['First Art Centre Founded', data.FirstArtCentreFounded], ['States represented', statesWithPlaces]].forEach(([label, value]) => {
+			[['Art centres & places', data.placeCount], ['First Art Centre Founded', data.FirstArtCentreFounded ?? '—'], ['States represented', statesWithPlaces]].forEach(([label, value]) => {
 				const item = document.createElement('div');
 				item.className = 'metric';
 				const number = document.createElement('span');

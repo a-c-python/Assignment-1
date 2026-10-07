@@ -53,6 +53,35 @@ def test_app_handles_missing_or_incomplete_csv_entry(
     assert records[1][row_key] == ""
 
 
+def test_overview_returns_stats_when_no_founding_years_are_recorded(monkeypatch):
+    monkeypatch.setattr(
+        app,
+        "get_places",
+        lambda: [
+            {"state": "NSW", "yearFounded": ""},
+            {"state": "VIC", "yearFounded": ""},
+        ],
+    )
+
+    response = app.app.test_client().get("/api/overview")
+
+    assert response.status_code == 200
+    assert response.get_json() == {
+        "placeCount": 2,
+        "FirstArtCentreFounded": None,
+        "placesByState": {
+            "NSW": 1,
+            "VIC": 1,
+            "QLD": 0,
+            "SA": 0,
+            "WA": 0,
+            "TAS": 0,
+            "NT": 0,
+        },
+        "foundedTimeline": [],
+    }
+
+
 #Testing login failures
 # Incorrect or non-existent username,should return invalid username or password error message
 def test_login_failure_nonexistent_user(auth_client):
