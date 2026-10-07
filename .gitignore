@@ -1,0 +1,11 @@
+# SQLite database files
+data/app.sqlite3*
+
+# Python cache files
+__pycache__/
+
+# Pytest cache files
+.pytest_cache/
+
+# VS Code settings
+.vscode/
