@@ -21,3 +21,6 @@
 
 #07/10/2026, VS Code, used AI to correct my code and explain why my mistakes wouldn't work
     #Prompt: Could you check my code for def test_login_failure_incorrect_password in test_app.py and see if it works? If not, could you explain why?
+
+#07/10/2026, VS Code, used AI to restructure my code so that each page has its own html file, instead of sharing one file, checked the code, added pages and app routes for better app formatting
+    #Prompt: Can you split-up the template's index.html file into a html file for each 'tab', and ensure that the test and app functions align with this new formatting? Please explain any changes to app.py that you make for this
