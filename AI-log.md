@@ -13,3 +13,8 @@
 #06/10/2026, VS Code, used AI to write code for user registration for saving a list that only a logged in user could see, asked it to change which type it used (PostgreSQL to SQLite)
     #Prompt: 'write code in app.py and index.html that lets users add places to a saved list. Only a logged in user should be able to see and edit their list, the list should not be visible to other users. Please modify the funtion myplaces to do so.' 
 
+#07/10/2026, VS Code, used AI to write me code for testing the app's response to a csv file with missing information and to explain that code
+    #Prompt: Write a function in test_app.py that will test if app.py crashes or returns 'file not found' when a data entry in the csv file is missing or incomplete. Explain each line of code. 
+
+#07/10/2026, VS Code, used AI to correct my code and explain why my mistakes wouldn't work
+    #Prompt: Could you check my code for def test_login_failure_incorrect_password in test_app.py and see if it works? If not, could you explain why?
