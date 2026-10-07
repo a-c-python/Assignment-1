@@ -254,6 +254,11 @@ def matching_records(records):
 
 # Flask routes - these are the endpoints that the frontend will use to access the data from the backend. The frontend will make requests to these endpoints and receive the data in json format.
 # Pages - tells the page where to find the html files for each page and what the active page is (for the navigation bar)
+@app.route("/")
+def home_page():
+	return render_template("works.html", active_page="works")
+
+
 @app.route("/works")
 def works_page():
 	return render_template("works.html", active_page="works")

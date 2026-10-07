@@ -108,6 +108,33 @@ def test_catalogue_sections_render_as_separate_pages(path, panel_id):
     assert page.count('class="panel"') == 1
 
 
+def test_homepage_renders_works():
+    response = app.app.test_client().get("/")
+
+    assert response.status_code == 200
+    assert 'id="panel-works"' in response.get_data(as_text=True)
+
+
+def test_header_account_links_and_registration_page():
+    client = app.app.test_client()
+
+    for path in ("/works", "/places", "/archive"):
+        response = client.get(path)
+        page = response.get_data(as_text=True)
+
+        assert response.status_code == 200
+        assert 'href="/login"' in page
+        assert 'href="/registration"' in page
+
+    login = client.get("/login")
+    registration = client.get("/registration")
+
+    assert login.status_code == 200
+    assert registration.status_code == 200
+    assert 'id="auth-form"' in registration.get_data(as_text=True)
+    assert 'data-action="register"' in registration.get_data(as_text=True)
+
+
 def test_place_details_appear_when_clicked(page, app_url):
     test_place = {                                  # Sets up a test place with various attributes to be used in the test.
         "name": "Test Place",
@@ -389,6 +416,82 @@ def auth_client(tmp_path, monkeypatch):
     monkeypatch.setitem(app.app.config, "TESTING", True)
     app.init_database()
     return app.app.test_client()
+
+
+def test_mylists_prompts_logged_out_users_to_log_in_or_register(auth_client):
+    response = auth_client.get("/mylists")
+    page = response.get_data(as_text=True)
+
+    assert response.status_code == 200
+    assert 'href="/mylists"' in page
+    assert 'href="/login"' in page
+    assert 'href="/registration"' in page
+    assert 'id="my-lists"' not in page
+
+
+def test_mylists_shows_and_edits_only_the_signed_in_users_places(auth_client, monkeypatch):
+    place = {
+        "name": "Private Test Place",
+        "state": "NSW",
+        "address": "1 Test Road",
+        "category": "Art centre",
+    }
+    monkeypatch.setattr(app, "get_places", lambda: [place])
+
+    assert auth_client.post(
+        "/api/register",
+        json={"username": "list_owner", "password": "secure-password"},
+    ).status_code == 201
+    assert auth_client.post("/api/myplaces", json={"name": place["name"]}).status_code == 201
+
+    owner_page = auth_client.get("/mylists")
+    assert owner_page.status_code == 200
+    assert "Private Test Place" in owner_page.get_data(as_text=True)
+    assert "Remove" in owner_page.get_data(as_text=True)
+
+    other_client = app.app.test_client()
+    assert other_client.post(
+        "/api/register",
+        json={"username": "other_user", "password": "secure-password"},
+    ).status_code == 201
+    other_page = other_client.get("/mylists")
+    assert other_page.status_code == 200
+    assert "Private Test Place" not in other_page.get_data(as_text=True)
+
+    removed = auth_client.delete("/api/myplaces", json={"name": place["name"]})
+    assert removed.status_code == 200
+    assert removed.get_json() == []
+    assert "Private Test Place" not in auth_client.get("/mylists").get_data(as_text=True)
+
+
+def test_user_can_remove_a_place_from_mylists(page, app_url, auth_client, monkeypatch):
+    place = {
+        "name": "Editable Test Place",
+        "state": "VIC",
+        "address": "2 Test Road",
+        "category": "Art centre",
+    }
+    monkeypatch.setattr(app, "get_places", lambda: [place])
+    assert auth_client.post(
+        "/api/register",
+        json={"username": "editable_user", "password": "secure-password"},
+    ).status_code == 201
+    assert auth_client.post("/api/myplaces", json={"name": place["name"]}).status_code == 201
+
+    session_cookie = auth_client.get_cookie(app.app.config["SESSION_COOKIE_NAME"])
+    page.context.add_cookies([{
+        "name": app.app.config["SESSION_COOKIE_NAME"],
+        "value": session_cookie.value,
+        "url": app_url,
+        "secure": False,
+    }])
+    page.goto(f"{app_url}/mylists")
+    page.get_by_role("button", name="Remove").click()
+
+    page.get_by_text("Your list is empty.", exact=False).wait_for()
+    assert page.locator("#my-lists .my-list-item").count() == 0
+
+
 #testing registration with recovery email and normalization of email address
 def test_register_accepts_and_normalizes_optional_recovery_email(auth_client):
     response = auth_client.post(
