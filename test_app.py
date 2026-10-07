@@ -398,7 +398,7 @@ def test_filter_places_by_state(page):
         {"name": "Place A", "state": "WA"},
         {"name": "Place B", "state": "NSW"},
         {"name": "Place C", "state": "WA"},
-        {"name": "Place D", "state": "VIC"}
+        {"name": "Place D", "state": "VIC"},
         {"name": "Place E", "state": "NSW"}
     ]
 
@@ -421,35 +421,19 @@ def test_filter_places_by_state(page):
 
     page.goto("http://127.0.0.1:5000")
 
-    place_names = page.locator("#places_names")
+    place_names = page.locator("#places-list .record-title")
 
     page.get_by_role("button", name="Western Australia").click()
-    assert place_names.locator("button", has_text="Place A").is_visible()
-    assert place_names.locator("button", has_text="Place C").is_visible()
-    assert place_names.locator("button", has_text="Place B").is_hidden()
-    assert place_names.locator("button", has_text="Place D").is_hidden()
-    assert place_names.locator("button", has_text="Place E").is_hidden()
+    assert sorted(place_names.all_text_contents()) == ["Place A", "Place C"]
 
     page.get_by_role("button", name="New South Wales").click()
-    assert place_names.locator("button", has_text="Place B").is_visible()
-    assert place_names.locator("button", has_text="Place E").is_visible()
-    assert place_names.locator("button", has_text="Place A").is_hidden()
-    assert place_names.locator("button", has_text="Place C").is_hidden()
-    assert place_names.locator("button", has_text="Place D").is_hidden()    
+    assert sorted(place_names.all_text_contents()) == ["Place B", "Place E"]
 
     page.get_by_role("button", name="Victoria").click()
-    assert place_names.locator("button", has_text="Place D").is_visible()   
-    assert place_names.locator("button", has_text="Place A").is_hidden()
-    assert place_names.locator("button", has_text="Place B").is_hidden()
-    assert place_names.locator("button", has_text="Place C").is_hidden()
-    assert place_names.locator("button", has_text="Place E").is_hidden()
+    assert place_names.all_text_contents() == ["Place D"]
 
     page.get_by_role("button", name="Nationwide").click()
-    assert place_names.locator("button", has_text="Place A").is_visible()
-    assert place_names.locator("button", has_text="Place B").is_visible()   
-    assert place_names.locator("button", has_text="Place C").is_visible()
-    assert place_names.locator("button", has_text="Place D").is_visible()
-    assert place_names.locator("button", has_text="Place E").is_visible()
+    assert sorted(place_names.all_text_contents()) == ["Place A", "Place B", "Place C", "Place D", "Place E"]
 
 # Testing filter for collection by type
 
