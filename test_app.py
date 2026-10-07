@@ -242,31 +242,7 @@ def test_login_failure_incorrect_password(auth_client):
     assert response.status_code == 401
     assert response.get_json() == {"error": "Invalid username or password."}
 
-#Testing Data retrival (clicking a work or place to view more information about it)
-def test_retrieve_work_details(auth_client, tmp_path, monkeypatch):
-    data_directory = tmp_path / "data"
-    data_directory.mkdir()
-    csv_path = data_directory / "Draft collection works.csv"
-
-    with csv_path.open("w", newline="", encoding="utf-8") as csv_file:
-        writer = csv.writer(csv_file)
-        writer.writerow(["Title", "Author", "Type", "Date made"])
-        writer.writerow(["Test Work", "Test Author", "Painting", "2023"])
-
-    monkeypatch.setattr(app, "BASE_DIR", str(tmp_path))
-
-    response = auth_client.get("/api/works")
-    assert response.status_code == 200
-    works = response.get_json()
-    assert len(works) == 1
-    work_id = works[0]["id"]
-
-    detail_response = auth_client.get(f"/api/works/{work_id}")
-    assert detail_response.status_code == 200
-    work_details = detail_response.get_json()
-    assert work_details["title"] == "Test Work"
-    assert work_details["author"] == "Test Author"
-
+# Testing Data retrival Place (clicking a place to view more information about it)
 def test_place_details_appear_when_clicked(page):
     test_place = {
         "name": "Test Place",
@@ -300,7 +276,9 @@ def test_place_details_appear_when_clicked(page):
 
     page.goto("http://127.0.0.1:5000") # Tells the test to go to the app's main page.
     page.get_by_role("button", name="Test Place").click() # Tells the test to click the button for the place named "Test Place".
-   
+    
+    details = page.locator("#place-detail")
+
     address = details.locator(".detail-grid > div").filter(
     has_text="Address"
     )
@@ -336,18 +314,82 @@ def test_place_details_appear_when_clicked(page):
     )
     assert year_founded.locator(".field-value").inner_text() == "2000"
 
-    listed_source = details.locator(".detail-grid > div").filter(
+    source = details.locator(".detail-grid > div").filter(
     has_text="Listed source"
     )
-    assert listed_source.locator(".field-value").inner_text() == ""
+    assert source.locator(".field-value").inner_text() == "ACH"
 
 
     website = details.locator(".detail-grid > div").filter(
     has_text="Website"
     )
-    assert website.locator(".field-value").inner_text() == "http://testplace.com
+    assert website.locator(".field-value").inner_text() == "http://testplace.com"
 
-      
+# Testing Data retrival Work (clicking a work to view more information about it)
+def test_work_details_appear_when_clicked(page):
+    test_work = {
+        "name": "Test Work",
+        "type of work": "Artefact",
+        "aboriginal heritage": "Unknown",
+        "work medium": "egg",
+        "aboriginal group location": "WA",
+        "date created": "c.1880",
+        "collection": "The State Art Collection, The Art Gallery of Western Australia",
+        "where the work is housed": "The Art Gallery of Western Australia",
+    }
+
+    page.route("**/api/works", lambda route: route.fulfill(json=[test_work]))
+        page.route("**/api/places", lambda route: route.fulfill(json=[]))
+        page.route(
+            "**/api/overview",
+            lambda route: route.fulfill(json={
+                "placeCount": 1,
+                "datedPlaceCount": 0,
+                "unrecordedFoundedCount": 1,
+                "placesByState": {},
+                "foundedTimeline": [],
+            }),
+        )
+        page.route(
+            "**/api/session",
+            lambda route: route.fulfill(json={"authenticated": False}),
+        )
+
+    page.goto("http://127.0.0.1:5000") # Tells the test to go to the app's main page.
+    page.get_by_role("button", name="Test Work").click() # Tells the test to click the button for the work named "Test Work".
+
+    details = page.locator("#work-detail")
+
+    work_type = details.locator(".detail-grid > div").filter(
+    has_text="Type of work"
+    )
+    assert work_type.locator(".field-value").inner_text() == "Artefact"
+
+    work_medium = details.locator(".detail-grid > div").filter(
+    has_text="Work medium"
+    )
+    assert work_medium.locator(".field-value").inner_text() == "egg"
+
+    date_created = details.locator(".detail-grid > div").filter(
+    has_text="Date created" 
+    )  
+    assert date_created.locator(".field-value").inner_text() == "c.1880"
+
+    aboriginal_heritage = details.locator(".detail-grid > div").filter(
+    has_text="Aboriginal heritage"
+    )
+    assert aboriginal_heritage.locator(".field-value").inner_text() == "Unknown"
+
+    collection = details.locator(".detail-grid > div").filter(
+    has_text="Collection"
+    )
+    assert collection.locator(".field-value").inner_text() == "The State Art Collection, The Art Gallery of Western Australia"
+
+    housed = details.locator(".detail-grid > div").filter(
+    has_text="Where the work is housed"
+    )
+    assert housed.locator(".field-value").inner_text() == "The Art Gallery of Western Australia"
+
 
 # Testing filter for collection by state
 def test_filter_places_by_state(auth_client,)
