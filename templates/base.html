@@ -246,21 +246,21 @@
 			</nav>
 		</header>
 
-		<main>
-			<nav class="tabs" aria-label="Catalogue sections">
-				<a class="tab" href="{{ url_for('works_page') }}" {% if active_page == 'works' %}aria-current="page"{% endif %}><span>01</span>Works</a>
-				<a class="tab" href="{{ url_for('places_page') }}" {% if active_page == 'places' %}aria-current="page"{% endif %}><span>02</span>Places</a>
-				<a class="tab" href="{{ url_for('archive_page') }}" {% if active_page == 'archive' %}aria-current="page"{% endif %}><span>03</span>Graphs &amp; timeline</a>
-				<a class="tab" href="{{ url_for('mylists_page') }}" {% if active_page == 'mylists' %}aria-current="page"{% endif %}><span>04</span>My Lists</a>
+		<main> 														<!-- page's main content area -->
+			<nav class="tabs" aria-label="Catalogue sections">		<!-- navigates via tabs, aria-label lets assistive technology (screen readers) read the tab purpose -->
+				<a class="tab" href="{{ url_for('works_page') }}" {% if active_page == 'works' %}aria-current="page"{% endif %}>Works</a>	<!-- class='tab', styles tabs according to style guides, links to works.html, aria identifies current page to assistive tech readers,  -->
+				<a class="tab" href="{{ url_for('places_page') }}" {% if active_page == 'places' %}aria-current="page"{% endif %}>Places</a>
+				<a class="tab" href="{{ url_for('archive_page') }}" {% if active_page == 'archive' %}aria-current="page"{% endif %}>Development of Art Centres</a>
+				<a class="tab" href="{{ url_for('mylists_page') }}" {% if active_page == 'mylists' %}aria-current="page"{% endif %}>My Lists</a>
 			</nav>
 
-			{% block page_content %}{% endblock %}
+			{% block page_content %}{% endblock %}	<!-- defines Jinja template block - allows a parent skeleton html, and 'child' pages - pages that hold the info specifically for the tab or 'page' -->
 			<p class="status" id="app-status" role="status"></p>
 		</main>
 
 		<footer>
-			<span>Collection records are presented as supplied in the source catalogue.</span>
-			<span>Indigenous Art Finder</span>
+			<span>This graphs are based on the data sourced via each institute's website, affiliated organisations, and/or articles about the institution. Please keep in mind that these graphs may contain inaccuracies due to the informal nature of organisations formation and/or poor records.</span>
+			<span>Indigenous Art Finder, 2026</span>
 		</footer>
 	</div>
 
