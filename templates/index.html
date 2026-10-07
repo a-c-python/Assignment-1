@@ -25,6 +25,7 @@
 		}
 
 		* { box-sizing: border-box; }
+		.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
 		body {
 			margin: 0;
 			color: var(--ink);
@@ -58,6 +59,15 @@
 		.brand-name { font: 600 22px/1 var(--serif); }
 		.brand-subtitle { margin-top: 6px; color: var(--muted); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; }
 		.masthead-note { color: var(--muted); font-size: 12px; text-align: right; }
+		.auth-panel { display: flex; align-items: center; justify-content: flex-end; gap: 8px; }
+		.auth-panel form { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 6px; }
+		.auth-panel input { width: 132px; min-height: 34px; padding: 0 8px; border: 1px solid var(--line); }
+		.auth-panel button, .place-action { min-height: 34px; padding: 0 11px; border: 1px solid var(--forest); background: var(--forest); color: #fff; cursor: pointer; font-size: 11px; font-weight: 600; }
+		.auth-panel button:hover, .place-action:hover { background: #15392d; }
+		.auth-panel #logout-button, .place-action.secondary { background: transparent; color: var(--forest); }
+		.auth-message { margin: 0; color: var(--muted); font-size: 11px; }
+		.place-action { margin-top: 18px; }
+		.place-action:disabled { cursor: not-allowed; opacity: .7; }
 		.intro { padding: 31px 0 23px; display: flex; align-items: end; justify-content: space-between; gap: 24px; }
 		.eyebrow { color: var(--ochre); font-size: 11px; font-weight: 700; letter-spacing: .13em; text-transform: uppercase; }
 		h1 { margin: 8px 0 0; font: 500 37px/1.05 var(--serif); }
@@ -164,6 +174,8 @@
 			.shell { padding: 0 18px 32px; }
 			.masthead { min-height: 81px; }
 			.masthead-note { display: none; }
+			.auth-panel { flex-basis: 100%; justify-content: flex-start; padding-bottom: 12px; }
+			.auth-panel form { justify-content: flex-start; }
 			.intro { align-items: start; flex-direction: column; gap: 11px; padding-top: 25px; }
 			h1 { font-size: 32px; }
 			.intro-copy { max-width: 500px; }
@@ -206,6 +218,21 @@
 				</div>
 			</div>
 			<div class="masthead-note">A catalogue of works, places<br>and cultural collections</div>
+			<div class="auth-panel">
+				<form id="auth-form">
+					<label class="sr-only" for="username">Username</label>
+					<input id="username" name="username" autocomplete="username" placeholder="Username" minlength="3" maxlength="32" required>
+					<label class="sr-only" for="password">Password</label>
+					<input id="password" name="password" type="password" autocomplete="current-password" placeholder="Password" minlength="8" maxlength="128" required>
+					<button type="submit" data-action="login">Log in</button>
+					<button type="submit" data-action="register">Create account</button>
+				</form>
+				<div id="account-panel" hidden>
+					<span id="account-name"></span>
+					<button type="button" id="logout-button">Log out</button>
+				</div>
+				<p class="auth-message" id="auth-message" role="status"></p>
+			</div>
 		</header>
 
 		<main>
@@ -257,6 +284,9 @@
 								<input class="search" id="places-search" type="search" placeholder="Search place, state, group…" autocomplete="off" aria-label="Search places by name, state, or group">
 							</label>
 							<div class="region-filters" id="region-filters" aria-label="Filter places by state"></div>
+							<div class="region-filters">
+								<button class="region-button" id="saved-places-filter" type="button" aria-pressed="false" disabled>My saved places</button>
+							</div>
 							<div class="browse-count"><span>PLACES</span><span id="places-count"></span></div>
 						</div>
 						<div class="record-list" id="places-list" aria-label="Cultural places"></div>
@@ -301,6 +331,9 @@
 		const status = document.querySelector('#app-status');
 		let works = [];
 		let places = [];
+		let savedPlaceNames = new Set();
+		let currentUsername = null;
+		let showingSavedPlaces = false;
 		let selectedPlaceState = 'ALL';
 		const regions = [
 			['NSW', 'New South Wales'], ['VIC', 'Victoria'], ['QLD', 'Queensland'],
@@ -310,6 +343,57 @@
 		function text(value) {
 			const clean = String(value ?? '').trim();
 			return clean || 'Not recorded';
+		}
+
+		async function requestJson(url, options = {}) {
+			const response = await fetch(url, options);
+			const payload = await response.json();
+			if (!response.ok) throw new Error(payload.error || 'The request could not be completed.');
+			return payload;
+		}
+
+		function renderAccount(user) {
+			currentUsername = user?.username ?? null;
+			document.querySelector('#auth-form').hidden = Boolean(currentUsername);
+			document.querySelector('#account-panel').hidden = !currentUsername;
+			document.querySelector('#account-name').textContent = currentUsername ? `Signed in as ${currentUsername}` : '';
+			document.querySelector('#saved-places-filter').disabled = !currentUsername;
+			if (!currentUsername) {
+				savedPlaceNames.clear();
+				showingSavedPlaces = false;
+				document.querySelector('#saved-places-filter').setAttribute('aria-pressed', 'false');
+				renderPlaceList(document.querySelector('#places-search').value);
+			}
+		}
+
+		async function loadSavedPlaces() {
+			const saved = await requestJson('/api/myplaces');
+			savedPlaceNames = new Set(saved.map((place) => place.name.toLocaleLowerCase()));
+			renderPlaceList(document.querySelector('#places-search').value);
+			const currentPlace = places.find((place) => place.name === document.querySelector('#place-detail').dataset.name);
+			if (currentPlace) showPlace(currentPlace);
+		}
+
+		async function authenticate(action) {
+			const form = document.querySelector('#auth-form');
+			const message = document.querySelector('#auth-message');
+			message.textContent = '';
+			try {
+				const user = await requestJson(`/api/${action}`, {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({
+						username: form.elements.username.value,
+						password: form.elements.password.value,
+					}),
+				});
+				form.elements.password.value = '';
+				renderAccount(user);
+				await loadSavedPlaces();
+				message.textContent = `Signed in as ${user.username}.`;
+			} catch (error) {
+				message.textContent = error.message;
+			}
 		}
 
 		function field(label, value, wide = false) {
@@ -394,14 +478,19 @@
 		function renderPlaceList(query = '') {
 			const normalized = query.trim().toLocaleLowerCase();
 			const matches = places.filter((place) => (selectedPlaceState === 'ALL' || place.state === selectedPlaceState)
+				&& (!showingSavedPlaces || savedPlaceNames.has(place.name.toLocaleLowerCase()))
 				&& Object.values(place).join(' ').toLocaleLowerCase().includes(normalized));
 			const list = document.querySelector('#places-list');
 			list.replaceChildren();
-			document.querySelector('#places-count').textContent = `${matches.length} / ${places.length}`;
+			document.querySelector('#places-count').textContent = `${matches.length} / ${showingSavedPlaces ? savedPlaceNames.size : places.length}`;
 			if (!matches.length) {
-				list.innerHTML = '<div class="empty-state">No places match that search.</div>';
+				list.textContent = showingSavedPlaces && savedPlaceNames.size === 0
+					? 'You have not saved any places yet.'
+					: 'No places match that search.';
+				list.className = 'record-list empty-state';
 				return;
 			}
+			list.className = 'record-list';
 			matches.forEach((place) => {
 				const button = document.createElement('button');
 				button.type = 'button';
@@ -452,6 +541,30 @@
 			const byline = document.createElement('p');
 			byline.className = 'detail-byline';
 			byline.textContent = [place.state, place.address].filter((value) => value).join(' · ') || 'Address not recorded';
+			const saveButton = document.createElement('button');
+			saveButton.type = 'button';
+			saveButton.className = 'place-action';
+			const isSaved = savedPlaceNames.has(place.name.toLocaleLowerCase());
+			saveButton.textContent = currentUsername ? (isSaved ? 'Remove from my list' : 'Save to my list') : 'Log in to save places';
+			saveButton.disabled = !currentUsername;
+			if (isSaved) saveButton.classList.add('secondary');
+			saveButton.addEventListener('click', async () => {
+				try {
+					const saved = await requestJson('/api/myplaces', {
+						method: isSaved ? 'DELETE' : 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({ name: place.name }),
+					});
+					savedPlaceNames = new Set(saved.map((savedPlace) => savedPlace.name.toLocaleLowerCase()));
+					document.querySelector('#app-status').textContent = isSaved
+						? `${place.name} removed from your list.`
+						: `${place.name} saved to your list.`;
+					showPlace(place);
+					renderPlaceList(document.querySelector('#places-search').value);
+				} catch (error) {
+					document.querySelector('#app-status').textContent = error.message;
+				}
+			});
 			const flags = document.createElement('div');
 			flags.className = 'place-flags';
 			[place.exclusiveContent === 'Yes' && 'Aboriginal content', place.aboriginalOwned === 'Yes' && 'Aboriginal owned & governed'].filter(Boolean).forEach((label) => {
@@ -492,7 +605,7 @@
 			} else {
 				grid.append(field('Website', place.website, true));
 			}
-			detail.append(kicker, title, byline, flags, rule, grid);
+			detail.append(kicker, title, byline, saveButton, flags, rule, grid);
 			renderPlaceList(document.querySelector('#places-search').value);
 		}
 
@@ -617,6 +730,24 @@
 
 		document.querySelector('#works-search').addEventListener('input', (event) => renderWorkList(event.target.value));
 		document.querySelector('#places-search').addEventListener('input', (event) => renderPlaceList(event.target.value));
+		document.querySelector('#saved-places-filter').addEventListener('click', (event) => {
+			showingSavedPlaces = !showingSavedPlaces;
+			event.currentTarget.setAttribute('aria-pressed', String(showingSavedPlaces));
+			renderPlaceList(document.querySelector('#places-search').value);
+		});
+		document.querySelector('#auth-form').addEventListener('submit', (event) => {
+			event.preventDefault();
+			authenticate(event.submitter?.dataset.action === 'register' ? 'register' : 'login');
+		});
+		document.querySelector('#logout-button').addEventListener('click', async () => {
+			try {
+				await requestJson('/api/logout', { method: 'POST' });
+				renderAccount(null);
+				document.querySelector('#auth-message').textContent = 'You have logged out.';
+			} catch (error) {
+				document.querySelector('#auth-message').textContent = error.message;
+			}
+		});
 
 		async function loadCatalogue() {
 			try {
@@ -635,8 +766,18 @@
 			}
 		}
 
+		async function loadAccount() {
+			try {
+				const user = await requestJson('/api/session');
+				renderAccount(user.authenticated ? user : null);
+				if (user.authenticated) await loadSavedPlaces();
+			} catch (error) {
+				document.querySelector('#auth-message').textContent = error.message;
+			}
+		}
+
 		loadCatalogue();
+		loadAccount();
 	</script>
 </body>
 </html>
-
