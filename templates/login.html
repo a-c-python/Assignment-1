@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}Login | Indigenous Art Finder{% endblock %}
+
+{% block page_content %}
+
+<div class="auth-panel">
+				<form id="auth-form">
+					<label class="sr-only" for="username">Username</label>
+					<input id="username" name="username" autocomplete="username" placeholder="Username" minlength="3" maxlength="32" required>
+					<label class="sr-only" for="password">Password</label>
+					<input id="password" name="password" type="password" autocomplete="current-password" placeholder="Password" minlength="8" maxlength="128" required>
+					<div id="recovery-email-field" hidden>
+						<label class="sr-only" for="recovery-email">Recovery email (optional)</label>
+						<input id="recovery-email" name="recovery_email" type="text" inputmode="email" autocomplete="email" autocapitalize="none" placeholder="Recovery email (optional)" maxlength="254">
+					</div>
+					<button type="submit" data-action="login">Log in</button>
+					<button type="submit" data-action="register" id="register-submit-button" hidden>Create account</button>
+					<button type="button" id="show-register-button">Create account</button>
+					<button type="button" id="cancel-register-button" hidden>Cancel</button>
+					<button type="button" id="forgot-password-button" hidden>Forgot password?</button>
+				</form>
+				<form id="reset-form" hidden>
+					<label class="sr-only" for="new-password">New password</label>
+					<input id="new-password" name="password" type="password" autocomplete="new-password" placeholder="New password" minlength="8" maxlength="128" required>
+					<button type="submit">Reset password</button>
+				</form>
+				<div id="account-panel" hidden>
+					<span id="account-name"></span>
+					<button type="button" id="logout-button">Log out</button>
+				</div>
+				<p class="auth-message" id="auth-message" role="status"></p>
+			</div>
+
+{% endblock %}
