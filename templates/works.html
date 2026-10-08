@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}Works | Indigenous Art Finder{% endblock %}
+
+{% block page_content %}
+<section class="panel" id="panel-works">
+	<div class="section-head">
+		<h2>Art, Artifacts, and Archive </h2>
+		<div class="section-meta" id="works-summary">Loading collection…</div>
+	</div>
+	<div class="workspace">
+		<div class="browse-column">
+			<div class="browse-toolbar">
+				<label class="search-wrap">
+					<span class="sr-only" hidden>Search works by title, author, medium or group</span>
+					<input class="search" id="works-search" type="search" placeholder="Search title, author, medium…" autocomplete="off" aria-label="Search works by title, author, medium or group">
+				</label>
+				<div class="browse-count"><span>WORKS</span><span id="works-count"></span></div>
+			</div>
+			<div class="record-list" id="works-list" aria-label="Works"></div>
+		</div>
+		<article class="detail" id="work-detail" aria-live="polite">
+			<div class="placeholder"><p>Select a work to see its collection record, cultural context and current location.</p></div>
+		</article>
+	</div>
+</section>
+{% endblock %}

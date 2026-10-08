@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block title %}My Lists | Indigenous Art Finder{% endblock %}
+
+{% block page_content %}
+<section class="panel" id="panel-lists">
+	<div class="section-head">
+		<h2>My lists</h2>
+		<div class="section-meta" id="my-lists-count">
+			{% if is_authenticated %}{{ saved_places|length }} saved places{% else %}Your private saved places{% endif %}
+		</div>
+	</div>
+	{% if is_authenticated %}
+		<p>Places you save are visible only to your account. Remove a place here to edit your list.</p>
+		<ul class="my-lists" id="my-lists" aria-label="Your saved places">
+			{% for place in saved_places %}
+				<li class="my-list-item" data-place-name="{{ place.name }}">
+					<div>
+						<h3>{{ place.name }}</h3>
+						<p>{{ [place.state, place.address]|reject('equalto', '')|join(' · ') or 'Location not recorded' }}</p>
+					</div>
+					<button class="place-action secondary" type="button" data-remove-place>Remove</button>
+				</li>
+			{% endfor %}
+		</ul>
+		<p class="empty-state" id="my-lists-empty" {% if saved_places %}hidden{% endif %}>
+			Your list is empty. Browse the <a href="{{ url_for('places_page') }}">places</a> and save ones you want to keep.
+		</p>
+		<p class="auth-message" id="my-lists-message" role="status" aria-live="polite"></p>
+	{% else %}
+		<div class="account-page">
+			<p>Log in or create an account to keep a private list of places you want to save.</p>
+			<div class="header-actions">
+				<a class="header-link secondary mylists-login" href="{{ url_for('login_page') }}">Log in</a>
+				<a class="header-link mylists-register" href="{{ url_for('registration_page') }}">Register</a>
+			</div>
+		</div>
+	{% endif %}
+</section>
+{% endblock %}

@@ -1,0 +1,1311 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Country & Collection | Indigenous Art Finder</title>
+
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Newsreader:wght@500;600&display=swap" rel="stylesheet">
+
+<style>
+:root{
+    --paper:#f4f2e9;
+    --white:#fffefa;
+    --ink:#202b24;
+    --muted:#68736a;
+    --line:#d9ddd3;
+    --green:#1d493a;
+    --leaf:#63865a;
+    --ochre:#bd583c;
+    --gold:#cf9e3d;
+}
+
+*{box-sizing:border-box}
+
+body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font:14px "DM Sans",sans-serif;
+}
+
+h1,h2,h3,.title,.brand{
+    font-family:"Newsreader",serif;
+}
+
+.container{
+    max-width:1200px;
+    margin:auto;
+    padding:0 30px 40px;
+}
+
+/* HEADER */
+
+header{
+    padding:30px 0;
+    border-bottom:1px solid var(--line);
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.brand{
+    font-size:25px;
+    color:var(--green);
+}
+
+.subtitle{
+    font-size:11px;
+    color:var(--muted);
+    letter-spacing:2px;
+    margin-top:5px;
+}
+
+header p{
+    color:var(--muted);
+    text-align:right;
+}
+
+/* INTRO */
+
+.intro{
+    padding:35px 0 25px;
+}
+
+.intro small{
+    color:var(--ochre);
+    font-weight:bold;
+    letter-spacing:2px;
+}
+
+h1{
+    font-size:40px;
+    margin:8px 0;
+}
+
+.intro p{
+    color:var(--muted);
+}
+
+/* NAVIGATION */
+
+.tabs{
+    display:flex;
+    border-bottom:1px solid var(--line);
+}
+
+.tab{
+    padding:15px 20px;
+    border:0;
+    background:none;
+    color:var(--muted);
+    cursor:pointer;
+    font-weight:bold;
+}
+
+.tab.active{
+    color:var(--green);
+    border-bottom:3px solid var(--green);
+}
+
+/* SECTIONS */
+
+section{
+    padding-top:25px;
+}
+
+.hidden{display:none}
+
+.workspace{
+    display:grid;
+    grid-template-columns:320px 1fr;
+    background:var(--white);
+    border:1px solid var(--line);
+}
+
+.sidebar{
+    border-right:1px solid var(--line);
+}
+
+.toolbar{
+    padding:15px;
+    border-bottom:1px solid var(--line);
+}
+
+input{
+    width:100%;
+    padding:12px;
+    border:1px solid var(--line);
+}
+
+.filters{
+    display:flex;
+    flex-wrap:wrap;
+    gap:5px;
+    margin-top:10px;
+}
+
+.filters button{
+    border:1px solid var(--line);
+    background:white;
+    padding:6px 9px;
+    cursor:pointer;
+}
+
+.filters button.active,
+.filters button:hover{
+    background:var(--green);
+    color:white;
+}
+
+.list{
+    max-height:500px;
+    overflow:auto;
+}
+
+.item{
+    width:100%;
+    padding:14px;
+    text-align:left;
+    border:0;
+    border-bottom:1px solid #eee;
+    background:white;
+    cursor:pointer;
+}
+
+.item:hover,
+.item.selected{
+    background:#f5f4ed;
+    border-left:3px solid var(--ochre);
+}
+
+.item strong{
+    display:block;
+    font-family:"Newsreader",serif;
+    font-size:17px;
+}
+
+.item span{
+    display:block;
+    color:var(--muted);
+    margin-top:4px;
+}
+
+.detail{
+    padding:30px;
+}
+
+.detail h2{
+    font-size:32px;
+    margin:5px 0;
+}
+
+.detail .author{
+    color:var(--muted);
+}
+
+.info{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:20px;
+    margin-top:25px;
+    border-top:1px solid var(--line);
+    padding-top:20px;
+}
+
+.info div{
+    padding-bottom:5px;
+}
+
+.info b{
+    display:block;
+    color:var(--muted);
+    font-size:10px;
+    text-transform:uppercase;
+    margin-bottom:5px;
+}
+
+/* CHARTS */
+
+.metrics{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    margin-bottom:20px;
+}
+
+.metric{
+    padding:20px;
+    background:var(--white);
+    border:1px solid var(--line);
+}
+
+.metric strong{
+    display:block;
+    font:30px "Newsreader",serif;
+    color:var(--green);
+}
+
+.metric span{
+    color:var(--muted);
+}
+
+.charts{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:20px;
+}
+
+.chart{
+    padding:20px;
+    background:var(--white);
+    border:1px solid var(--line);
+}
+
+.bar{
+    margin:15px 0;
+}
+
+.bar label{
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:5px;
+}
+
+.bar-track{
+    height:10px;
+    background:#e9ece5;
+}
+
+.bar-fill{
+    height:100%;
+    background:var(--leaf);
+}
+
+.line{
+    width:100%;
+    height:220px;
+}
+
+/* FOOTER */
+
+footer{
+    margin-top:30px;
+    padding-top:15px;
+    border-top:1px solid var(--line);
+    color:var(--muted);
+    font-size:11px;
+}
+
+/* MOBILE */
+
+@media(max-width:750px){
+    .container{padding:0 15px 30px}
+
+    header p{display:none}
+
+    h1{font-size:32px}
+
+    .workspace,
+    .charts{
+        grid-template-columns:1fr;
+    }
+
+    .sidebar{
+        border-right:0;
+        border-bottom:1px solid var(--line);
+    }
+
+    .metrics{
+        grid-template-columns:1fr;
+    }
+
+    .info{
+        grid-template-columns:1fr;
+    }
+}
+</style>
+</head>
+
+<body>
+<<<<<<< HEAD:templates/index.html
+
+<div class="container">
+
+<header>
+    <div>
+        <div class="brand">Country & Collection</div>
+        <div class="subtitle">INDIGENOUS ART FINDER · AUSTRALIA</div>
+    </div>
+    <p>Art, places and cultural collections<br>across Australia</p>
+</header>
+
+<div class="intro">
+    <small>EXPLORE THE COLLECTION</small>
+    <h1>Art, Place & Story</h1>
+    <p>Explore Indigenous artworks, cultural places and the development of art centres across Australia.</p>
+</div>
+
+<nav class="tabs">
+    <button class="tab active" onclick="showPage('collections',this)">01 Collections</button>
+    <button class="tab" onclick="showPage('places',this)">02 Places</button>
+    <button class="tab" onclick="showPage('time',this)">03 Art Centres Over Time</button>
+</nav>
+
+
+<!-- COLLECTIONS -->
+
+<section id="collections">
+=======
+	<div class="shell">
+		<header class="masthead">
+			<div class="brand">
+				<div class="brand-mark" aria-hidden="true">IAF</div>
+				<div>
+					<div class="brand-name">Indigenous Art Finder </div>
+					<div class="brand-subtitle">Australia</div>
+				</div>
+			</div>
+			<div class="masthead-note">Explore art centres and browse artworks</div>
+			<nav class="header-actions" aria-label="Account">
+				<a class="header-link secondary" href="{{ url_for('login_page') }}">Log in</a>
+				<a class="header-link" href="{{ url_for('registration_page') }}">Register</a>
+			</nav>
+		</header>
+
+		<main> 														<!-- page's main content area -->
+			<nav class="tabs" aria-label="Catalogue sections">		<!-- navigates via tabs, aria-label lets assistive technology (screen readers) read the tab purpose -->
+				<a class="tab" href="{{ url_for('works_page') }}" {% if active_page == 'works' %}aria-current="page"{% endif %}>Works</a>	<!-- class='tab', styles tabs according to style guides, links to works.html, aria identifies current page to assistive tech readers,  -->
+				<a class="tab" href="{{ url_for('places_page') }}" {% if active_page == 'places' %}aria-current="page"{% endif %}>Places</a>
+				<a class="tab" href="{{ url_for('archive_page') }}" {% if active_page == 'archive' %}aria-current="page"{% endif %}>Development of Art Centres</a>
+				<a class="tab" href="{{ url_for('mylists_page') }}" {% if active_page == 'mylists' %}aria-current="page"{% endif %}>My Lists</a>
+			</nav>
+
+			{% block page_content %}{% endblock %}	<!-- defines Jinja template block - allows a parent skeleton html, and 'child' pages - pages that hold the info specifically for the tab or 'page' -->
+			<p class="status" id="app-status" role="status"></p>
+		</main>
+
+		<footer class="{% if active_page == 'archive' %}archive-footer{% endif %}">
+			{% if active_page == 'archive' %}
+				<span>This graphs are based on the data sourced via each institute's website, affiliated organisations, and/or articles about the institution. Please keep in mind that these graphs may contain inaccuracies due to the informal nature of organisations formation and/or poor records.</span>
+			{% endif%}
+			<span>Indigenous Art Finder, 2026</span>
+		</footer>
+	</div>
+
+	<dialog class="welcome-dialog" id="welcome-dialog" aria-labelledby="welcome-title">
+		<h2 id="welcome-title">Welcome to Indigenous Art Finder Australia</h2>
+		<p>We acknowledge the traditional owners of the lands and seas this site explores. We pay our respects to Elders past and present, and give our thanks to all Aboriginal and Torres Strait Islander peoples.</p>
+		<p>Please be warned that this site may contain names of Aboriginal and Torres Strait Islander peoples who have passed away.</p>
+		<form method="dialog">
+			<button autofocus>Continue to the homepage</button>
+		</form>
+	</dialog>
+
+	<script>
+		const welcomeDialog = document.querySelector('#welcome-dialog');
+		welcomeDialog.addEventListener('close', () => {
+			localStorage.setItem('opening message', 'true');
+		});
+		window.addEventListener('load', () => {
+			if (!localStorage.getItem('opening message')) welcomeDialog.showModal();
+		});
+		
+		const status = document.querySelector('#app-status');
+		let works = [];
+		let places = [];
+		let savedPlaceNames = new Set();
+		let currentUsername = null;
+		let loginFailed = false;
+		let showingSavedPlaces = false;
+		let selectedPlaceState = 'ALL';
+		const regions = [
+			['NSW', 'New South Wales'], ['VIC', 'Victoria'], ['QLD', 'Queensland'],
+			['SA', 'South Australia'], ['WA', 'Western Australia'], ['TAS', 'Tasmania'], ['NT', 'Northern Territory'],
+		];
+>>>>>>> e693cd4c8b12f3889e9a36dd116958e4e804bd08:templates/base.html
+
+<h2>Collection Works</h2>
+
+<<<<<<< HEAD:templates/index.html
+<div class="workspace">
+
+<div class="sidebar">
+=======
+		async function requestJson(url, options = {}) {
+			const response = await fetch(url, options);
+			const payload = await response.json();
+			if (!response.ok) {
+				const error = new Error(payload.error || 'The request could not be completed.');
+				error.status = response.status;
+				throw error;
+			}
+			return payload;
+		}
+
+		function setRegistrationMode(enabled) {
+			const loginButton = document.querySelector('[data-action="login"]');
+			const showRegisterButton = document.querySelector('#show-register-button');
+			const registerButton = document.querySelector('#register-submit-button');
+			const cancelRegisterButton = document.querySelector('#cancel-register-button');
+			const recoveryEmailField = document.querySelector('#recovery-email-field');
+			const forgotPasswordButton = document.querySelector('#forgot-password-button');
+			if (loginButton) loginButton.hidden = enabled;
+			if (showRegisterButton) showRegisterButton.hidden = enabled;
+			if (registerButton) registerButton.hidden = !enabled;
+			if (cancelRegisterButton) cancelRegisterButton.hidden = !enabled;
+			if (recoveryEmailField) recoveryEmailField.hidden = !enabled && !loginFailed;
+			if (forgotPasswordButton) forgotPasswordButton.hidden = !loginFailed;
+		}
+
+		function renderAccount(user) {
+			currentUsername = user?.username ?? null;
+			const authForm = document.querySelector('#auth-form');
+			const accountPanel = document.querySelector('#account-panel');
+			const accountName = document.querySelector('#account-name');
+			if (authForm) authForm.hidden = Boolean(currentUsername);
+			if (accountPanel) accountPanel.hidden = !currentUsername;
+			if (accountName) accountName.textContent = currentUsername ? `Signed in as ${currentUsername}` : '';
+			if (currentUsername) {
+				loginFailed = false;
+				setRegistrationMode(false);
+			}
+			const savedPlacesFilter = document.querySelector('#saved-places-filter');
+			if (savedPlacesFilter) savedPlacesFilter.disabled = !currentUsername;
+			if (!currentUsername) {
+				savedPlaceNames.clear();
+				showingSavedPlaces = false;
+				if (savedPlacesFilter) {
+					savedPlacesFilter.setAttribute('aria-pressed', 'false');
+					renderPlaceList(document.querySelector('#places-search').value);
+				}
+			}
+		}
+>>>>>>> e693cd4c8b12f3889e9a36dd116958e4e804bd08:templates/base.html
+
+<div class="toolbar">
+<input id="workSearch" placeholder="Search artworks..." oninput="searchWorks()">
+</div>
+
+<<<<<<< HEAD:templates/index.html
+<div class="list" id="workList"></div>
+=======
+		async function authenticate(action) {
+			const form = document.querySelector('#auth-form');
+			const message = document.querySelector('#auth-message');
+			message.textContent = '';
+			try {
+				const user = await requestJson(`/api/${action}`, {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({
+						username: form.elements.username.value,
+						password: form.elements.password.value,
+						...(action === 'register' ? { recovery_email: form.elements.recovery_email.value } : {}),
+					}),
+				});
+				form.elements.password.value = '';
+				renderAccount(user);
+				if (placesSearch) await loadSavedPlaces();
+				message.textContent = `Signed in as ${user.username}.`;
+			} catch (error) {
+				if (action === 'login' && error.status === 401) {
+					loginFailed = true;
+					document.querySelector('#recovery-email-field').hidden = false;
+					document.querySelector('#forgot-password-button').hidden = false;
+				}
+				message.textContent = error.message;
+			}
+		}
+>>>>>>> e693cd4c8b12f3889e9a36dd116958e4e804bd08:templates/base.html
+
+</div>
+
+<div class="detail" id="workDetail">
+<h2>Select an artwork</h2>
+<p class="author">Choose a work from the list to see its information.</p>
+</div>
+
+</div>
+
+<<<<<<< HEAD:templates/index.html
+</section>
+
+
+<!-- PLACES -->
+
+<section id="places" class="hidden">
+=======
+		function renderWorkList(query = '') {
+			const normalized = query.trim().toLocaleLowerCase();
+			const matches = works.filter((work) => Object.values(work).join(' ').toLocaleLowerCase().includes(normalized));
+			const list = document.querySelector('#works-list');
+			list.replaceChildren();
+			document.querySelector('#works-count').textContent = `${matches.length} / ${works.length}`;
+			if (!matches.length) {
+				list.innerHTML = '<div class="empty-state">No works match that search.</div>';
+				return;
+			}
+			matches.forEach((work) => {
+				const button = document.createElement('button');
+				button.type = 'button';
+				button.className = 'record-button';
+				button.setAttribute('aria-current', String(document.querySelector('#work-detail').dataset.title === work.title));
+				const title = document.createElement('span');
+				title.className = 'record-title';
+				title.textContent = text(work.title);
+				const author = document.createElement('span');
+				author.className = 'record-subtitle';
+				author.textContent = text(work.author);
+				const type = document.createElement('span');
+				type.className = 'record-tag';
+				type.textContent = text(work.type);
+				button.append(title, author, type);
+				button.addEventListener('click', () => showWork(work));
+				list.append(button);
+			});
+		}
+
+		function showWork(work) {
+			const detail = document.querySelector('#work-detail');
+			detail.dataset.title = work.title;
+			detail.replaceChildren();
+			const kicker = document.createElement('div');
+			kicker.className = 'detail-kicker';
+			kicker.textContent = text(work.type);
+			const title = document.createElement('h3');
+			title.textContent = text(work.title);
+			const byline = document.createElement('p');
+			byline.className = 'detail-byline';
+			byline.textContent = text(work.author);
+			const rule = document.createElement('div');
+			rule.className = 'detail-rule';
+			const grid = document.createElement('div');
+			grid.className = 'detail-grid';
+			grid.append(
+				field('Type of work', work.type),
+				field('Aboriginal heritage', work.heritage),
+				field('Work medium', work.medium),
+				field('Aboriginal group location', work.groupLocationAndState),
+				field('Date created', work.dateCreated),
+				field('Collection', work.collection, true),
+				field('Where the work is housed', work.housedAt, true),
+				field('Information sourced from', work.source, true),
+			);
+			detail.append(kicker, title, byline, rule, grid);
+			renderWorkList(document.querySelector('#works-search').value);
+		}
+>>>>>>> e693cd4c8b12f3889e9a36dd116958e4e804bd08:templates/base.html
+
+<h2>Cultural Places</h2>
+
+<div class="workspace">
+
+<<<<<<< HEAD:templates/index.html
+<div class="sidebar">
+=======
+		function showPlace(place) {
+			const detail = document.querySelector('#place-detail');
+			detail.dataset.name = place.name;
+			detail.replaceChildren();
+			const kicker = document.createElement('div');
+			kicker.className = 'detail-kicker';
+			kicker.textContent = text(place.category);
+			const title = document.createElement('h3');
+			title.textContent = text(place.name);
+			const byline = document.createElement('p');
+			byline.className = 'detail-byline';
+			byline.textContent = [place.state, place.address].filter((value) => value).join(' · ') || 'Address not recorded';
+			const saveButton = document.createElement('button');
+			saveButton.type = 'button';
+			saveButton.className = 'place-action';
+			const isSaved = savedPlaceNames.has(place.name.toLocaleLowerCase());
+			saveButton.textContent = currentUsername ? (isSaved ? 'Remove from my list' : 'Save to my list') : 'Log in to save places';
+			saveButton.disabled = !currentUsername;
+			if (isSaved) saveButton.classList.add('secondary');
+			saveButton.addEventListener('click', async () => {
+				try {
+					const saved = await requestJson('/api/myplaces', {
+						method: isSaved ? 'DELETE' : 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({ name: place.name }),
+					});
+					savedPlaceNames = new Set(saved.map((savedPlace) => savedPlace.name.toLocaleLowerCase()));
+					document.querySelector('#app-status').textContent = isSaved
+						? `${place.name} removed from your list.`
+						: `${place.name} saved to your list.`;
+					showPlace(place);
+					renderPlaceList(document.querySelector('#places-search').value);
+				} catch (error) {
+					document.querySelector('#app-status').textContent = error.message;
+				}
+			});
+			const flags = document.createElement('div');
+			flags.className = 'place-flags';
+			[place.exclusiveContent === 'Yes' && 'Aboriginal content', place.aboriginalOwned === 'Yes' && 'Aboriginal owned & governed'].filter(Boolean).forEach((label) => {
+				const flag = document.createElement('span');
+				flag.className = 'flag';
+				flag.textContent = label;
+				flags.append(flag);
+			});
+			const rule = document.createElement('div');
+			rule.className = 'detail-rule';
+			const grid = document.createElement('div');
+			grid.className = 'detail-grid';
+			grid.append(	// place - detailed information
+				field('Address', place.address, true),
+				field('Category', place.category),
+				field('Aboriginal group', place.aboriginalGroup),
+				field('Indigenous exclusive content', place.exclusiveContent),
+				field('Indigenous owned and run', place.aboriginalOwned),
+				field('Type of interaction', place.interactions),
+				field('Year founded', place.yearFounded),
+				field('Information Source', place.source, true),
+			);
+			if (place.associatedWith?.trim()) {
+   			 grid.append(field('Associated with', place.associatedWith, true));
+			}
+
+			if (place.website && /^https?:\/\//i.test(place.website)) {
+				const websiteField = document.createElement('div');
+				websiteField.className = 'field-wide';
+				const label = document.createElement('span');
+				label.className = 'field-label';
+				label.textContent = 'Website';
+				const link = document.createElement('a');
+				link.className = 'field-value';
+				link.href = place.website;
+				link.target = '_blank';
+				link.rel = 'noopener noreferrer';
+				link.textContent = place.website;
+				websiteField.append(label, link);
+				grid.append(websiteField);
+			} else {
+				grid.append(field('Website', place.website, true));
+			}
+			detail.append(kicker, title, byline, saveButton, flags, rule, grid);
+			renderPlaceList(document.querySelector('#places-search').value);
+		}
+>>>>>>> e693cd4c8b12f3889e9a36dd116958e4e804bd08:templates/base.html
+
+<div class="toolbar">
+
+<input id="placeSearch" placeholder="Search places..." oninput="searchPlaces()">
+
+<<<<<<< HEAD:templates/index.html
+<div class="filters" id="stateFilters"></div>
+
+</div>
+
+<div class="list" id="placeList"></div>
+
+</div>
+
+<div class="detail" id="placeDetail">
+<h2>Select a place</h2>
+<p class="author">Choose a place to see its information.</p>
+</div>
+
+</div>
+
+</section>
+
+
+<!-- ART CENTRES OVER TIME -->
+
+<section id="time" class="hidden">
+
+<h2>Indigenous Art Centres in Australia</h2>
+
+<div class="metrics" id="metrics"></div>
+
+<div class="charts">
+
+<div class="chart">
+
+<h3>Places by State</h3>
+
+<div id="stateChart"></div>
+
+</div>
+
+
+<div class="chart">
+
+<h3>Art Centres Over Time</h3>
+
+<svg class="line" viewBox="0 0 500 220" id="lineChart"></svg>
+
+<div id="timeline"></div>
+
+</div>
+
+</div>
+
+</section>
+
+
+<footer>
+Country & Collection · Indigenous Art Finder
+</footer>
+
+</div>
+
+
+<script>
+
+let works=[];
+let places=[];
+let overview={};
+
+const states=["WA","NSW","VIC","QLD","SA","TAS","NT"];
+
+
+/* PAGE NAVIGATION */
+
+function showPage(page,button){
+
+    document.querySelectorAll("section").forEach(s=>s.classList.add("hidden"));
+
+    document.getElementById(page).classList.remove("hidden");
+
+    document.querySelectorAll(".tab").forEach(b=>b.classList.remove("active"));
+
+    button.classList.add("active");
+}
+
+
+/* LOAD DATA FROM PYTHON */
+
+async function loadData(){
+
+    try{
+
+        const [w,p,o]=await Promise.all([
+            fetch("/api/works").then(r=>r.json()),
+            fetch("/api/places").then(r=>r.json()),
+            fetch("/api/overview").then(r=>r.json())
+        ]);
+
+        works=w;
+        places=p;
+        overview=o;
+
+        displayWorks(works);
+        displayPlaces(places);
+        createFilters();
+        createCharts();
+
+    }catch(error){
+
+        console.error(error);
+
+        document.getElementById("workList").innerHTML=
+            "<p>Unable to load data. Make sure the Python server is running.</p>";
+    }
+}
+
+
+/* COLLECTIONS */
+
+function displayWorks(data){
+
+    const list=document.getElementById("workList");
+
+    list.innerHTML="";
+
+    data.forEach((work,index)=>{
+
+        const button=document.createElement("button");
+
+        button.className="item";
+
+        button.innerHTML=`
+            <strong>${work.title || "Untitled"}</strong>
+            <span>${work.author || "Author unknown"}</span>
+            <span>${work.type || "Artwork"}</span>
+        `;
+
+        button.onclick=()=>showWork(work,button);
+
+        list.appendChild(button);
+
+        if(index===0) showWork(work,button);
+    });
+}
+
+
+function showWork(work,button){
+
+    document.querySelectorAll("#workList .item")
+        .forEach(x=>x.classList.remove("selected"));
+
+    if(button) button.classList.add("selected");
+
+    document.getElementById("workDetail").innerHTML=`
+
+        <small>${work.type || "Artwork"}</small>
+
+        <h2>${work.title || "Untitled"}</h2>
+
+        <p class="author">
+            ${work.author || "Author not recorded"}
+        </p>
+
+        <div class="info">
+
+            ${field("Aboriginal Group",work.heritage)}
+
+            ${field("Aboriginal Group Location",work.groupLocationAndState)}
+
+            ${field("State",work.state)}
+
+            ${field("Medium",work.medium)}
+
+            ${field("Date Made",work.dateCreated)}
+
+            ${field("Collection",work.collection)}
+
+            ${field("Location",work.housedAt)}
+
+            ${field("Source",work.source)}
+
+        </div>
+    `;
+}
+
+
+function field(label,value){
+
+    return `
+        <div>
+            <b>${label}</b>
+            ${value || "Not recorded"}
+        </div>
+    `;
+}
+
+
+function searchWorks(){
+
+    const search=document
+        .getElementById("workSearch")
+        .value
+        .toLowerCase();
+
+    const results=works.filter(work=>
+        Object.values(work)
+        .join(" ")
+        .toLowerCase()
+        .includes(search)
+    );
+
+    displayWorks(results);
+}
+
+
+/* PLACES */
+
+function displayPlaces(data){
+
+    const search=document
+        .getElementById("placeSearch")
+        .value
+        .toLowerCase();
+
+    const state=document
+        .querySelector("#stateFilters .active")
+        ?.dataset.state || "ALL";
+
+    const filtered=data.filter(place=>
+        (state==="ALL" || place.state===state) &&
+        Object.values(place)
+        .join(" ")
+        .toLowerCase()
+        .includes(search)
+    );
+
+    const list=document.getElementById("placeList");
+
+    list.innerHTML="";
+
+    filtered.forEach((place,index)=>{
+
+        const button=document.createElement("button");
+
+        button.className="item";
+
+        button.innerHTML=`
+            <strong>${place.name}</strong>
+            <span>${place.state || ""}</span>
+            <span>${place.category || ""}</span>
+        `;
+
+        button.onclick=()=>showPlace(place,button);
+
+        list.appendChild(button);
+
+        if(index===0) showPlace(place,button);
+    });
+}
+
+
+function showPlace(place,button){
+
+    document.querySelectorAll("#placeList .item")
+        .forEach(x=>x.classList.remove("selected"));
+
+    if(button) button.classList.add("selected");
+
+    document.getElementById("placeDetail").innerHTML=`
+
+        <small>${place.category || "Cultural Place"}</small>
+
+        <h2>${place.name}</h2>
+
+        <p class="author">
+            ${place.state || ""} · ${place.address || "Address not recorded"}
+        </p>
+
+        <div class="info">
+
+            ${field("Aboriginal Group",place.aboriginalGroup)}
+
+            ${field("Indigenous Owned",place.aboriginalOwned)}
+
+            ${field("Indigenous Content",place.exclusiveContent)}
+
+            ${field("Interaction",place.interactions)}
+
+            ${field("Year Founded",place.yearFounded)}
+
+            ${field("Source",place.source)}
+
+            ${field("Associated With",place.associatedWith)}
+
+            ${field("Website",place.website)}
+
+        </div>
+    `;
+}
+
+
+function searchPlaces(){
+    displayPlaces(places);
+}
+
+
+function createFilters(){
+
+    const container=document.getElementById("stateFilters");
+
+    container.innerHTML="";
+
+    ["ALL",...states].forEach(state=>{
+
+        const button=document.createElement("button");
+
+        button.textContent=state==="ALL"?"All":state;
+
+        button.dataset.state=state;
+
+        if(state==="ALL")
+            button.classList.add("active");
+
+        button.onclick=()=>{
+
+            container.querySelectorAll("button")
+                .forEach(b=>b.classList.remove("active"));
+
+            button.classList.add("active");
+
+            displayPlaces(places);
+        };
+
+        container.appendChild(button);
+    });
+}
+
+
+/* CHARTS */
+
+function createCharts(){
+
+    const data=overview.placesByState || {};
+
+    const total=overview.placeCount || 0;
+
+    document.getElementById("metrics").innerHTML=`
+
+        <div class="metric">
+            <strong>${total}</strong>
+            <span>Art centres & places</span>
+        </div>
+
+        <div class="metric">
+            <strong>${overview.datedPlaceCount || 0}</strong>
+            <span>Places with founding year</span>
+        </div>
+
+        <div class="metric">
+            <strong>${Object.keys(data).length}</strong>
+            <span>States & territories</span>
+        </div>
+    `;
+
+
+    const chart=document.getElementById("stateChart");
+
+    chart.innerHTML="";
+
+    const max=Math.max(...Object.values(data),1);
+
+    Object.entries(data).forEach(([state,count])=>{
+
+        chart.innerHTML+=`
+
+            <div class="bar">
+
+                <label>
+                    <span>${state}</span>
+                    <strong>${count}</strong>
+                </label>
+
+                <div class="bar-track">
+
+                    <div
+                        class="bar-fill"
+                        style="width:${count/max*100}%">
+                    </div>
+
+                </div>
+
+            </div>
+        `;
+    });
+
+
+    createLineChart(overview.foundedTimeline || []);
+}
+
+
+/* LINE GRAPH */
+
+function createLineChart(data){
+
+    const svg=document.getElementById("lineChart");
+
+    svg.innerHTML="";
+
+    if(!data.length) return;
+
+    const max=Math.max(...data.map(x=>x.total),1);
+
+    const points=data.map((item,i)=>{
+
+        const x=30+(i/(data.length-1||1))*440;
+
+        const y=190-(item.total/max)*160;
+
+        return `${x},${y}`;
+    }).join(" ");
+
+    svg.innerHTML=`
+
+        <line x1="30" y1="190" x2="470" y2="190"
+            stroke="#d9ddd3"/>
+
+        <polyline
+            points="${points}"
+            fill="none"
+            stroke="#1d493a"
+            stroke-width="3"/>
+
+        ${data.map((item,i)=>{
+
+            const x=30+(i/(data.length-1||1))*440;
+
+            const y=190-(item.total/max)*160;
+
+            return `
+                <circle
+                    cx="${x}"
+                    cy="${y}"
+                    r="5"
+                    fill="#bd583c"/>
+            `;
+
+        }).join("")}
+    `;
+
+
+    document.getElementById("timeline").innerHTML=
+
+        data.map(item=>`
+            <p>
+                <strong>${item.year}</strong> –
+                ${item.count} founded,
+                ${item.total} total
+            </p>
+        `).join("");
+}
+
+
+/* START APPLICATION */
+
+loadData();
+
+</script>
+=======
+		function renderOverview(data) {
+			const metrics = document.querySelector('#metrics');
+			metrics.replaceChildren();
+			const statesWithPlaces = Object.values(data.placesByState).filter((count) => count > 0).length;
+			[['Art centres & places', data.placeCount], ['First Art Centre Founded', data.FirstArtCentreFounded ?? '—'], ['States represented', statesWithPlaces]].forEach(([label, value]) => {
+				const item = document.createElement('div');
+				item.className = 'metric';
+				const number = document.createElement('span');
+				number.className = 'metric-value';
+				number.textContent = value;
+				const caption = document.createElement('span');
+				caption.className = 'metric-label';
+				caption.textContent = label;
+				item.append(number, caption);
+				metrics.append(item);
+			});
+			renderBars('#state-chart', Object.entries(data.placesByState));
+			renderFoundedChart(data.foundedTimeline);
+			const timeline = document.querySelector('#timeline');
+			timeline.replaceChildren();
+			data.foundedTimeline.forEach((entry) => {
+				const item = document.createElement('div');
+				item.className = 'timeline-item';
+				const year = document.createElement('span');
+				year.className = 'timeline-year';
+				year.textContent = entry.year;
+				const count = document.createElement('span');
+				count.className = 'timeline-count';
+				count.textContent = `${entry.count} founded · ${entry.total} total`;
+				item.append(year, count);
+				timeline.append(item);
+			});
+			document.querySelector('#archive-note').textContent = data.unrecordedFoundedCount
+				? `${data.unrecordedFoundedCount} places have no recognizable founding year in the source CSV and are not plotted.`
+				: 'Founding totals are cumulative; yearly additions are shown in the graph. \nNote: Institutions that have shutdown or are not in our dataset are not included';
+		}
+
+		const worksSearch = document.querySelector('#works-search');
+		if (worksSearch) worksSearch.addEventListener('input', (event) => renderWorkList(event.target.value));
+		const placesSearch = document.querySelector('#places-search');
+		if (placesSearch) placesSearch.addEventListener('input', (event) => renderPlaceList(event.target.value));
+		const savedPlacesFilter = document.querySelector('#saved-places-filter');
+		if (savedPlacesFilter) savedPlacesFilter.addEventListener('click', (event) => {
+			showingSavedPlaces = !showingSavedPlaces;
+			event.currentTarget.setAttribute('aria-pressed', String(showingSavedPlaces));
+			renderPlaceList(document.querySelector('#places-search').value);
+		});
+		const authForm = document.querySelector('#auth-form');
+		if (authForm) {
+			authForm.addEventListener('submit', (event) => {
+				event.preventDefault();
+				authenticate(event.submitter?.dataset.action === 'register' ? 'register' : 'login');
+			});
+		}
+		const showRegisterButton = document.querySelector('#show-register-button');
+		if (showRegisterButton) showRegisterButton.addEventListener('click', () => {
+			loginFailed = false;
+			setRegistrationMode(true);
+			document.querySelector('#auth-message').textContent = '';
+		});
+		const cancelRegisterButton = document.querySelector('#cancel-register-button');
+		if (cancelRegisterButton) cancelRegisterButton.addEventListener('click', () => {
+			setRegistrationMode(false);
+			document.querySelector('#auth-message').textContent = '';
+		});
+		const forgotPasswordButton = document.querySelector('#forgot-password-button');
+		if (forgotPasswordButton) forgotPasswordButton.addEventListener('click', requestPasswordReset);
+		const resetToken = new URLSearchParams(window.location.search).get('reset_token');
+		const resetForm = document.querySelector('#reset-form');
+		if (resetToken && authForm && resetForm) {
+			authForm.hidden = true;
+			resetForm.hidden = false;
+		}
+		if (resetForm) resetForm.addEventListener('submit', (event) => {
+			event.preventDefault();
+			resetPassword(resetToken);
+		});
+		const logoutButton = document.querySelector('#logout-button');
+		if (logoutButton) logoutButton.addEventListener('click', async () => {
+			try {
+				await requestJson('/api/logout', { method: 'POST' });
+				renderAccount(null);
+				document.querySelector('#auth-message').textContent = 'You have logged out.';
+			} catch (error) {
+				document.querySelector('#auth-message').textContent = error.message;
+			}
+		});
+		const myLists = document.querySelector('#my-lists');
+		if (myLists) {
+			myLists.querySelectorAll('[data-remove-place]').forEach((button) => {
+				button.addEventListener('click', async () => {
+					const item = button.closest('[data-place-name]');
+					const placeName = item.dataset.placeName;
+					const message = document.querySelector('#my-lists-message');
+					try {
+						const savedPlaces = await requestJson('/api/myplaces', {
+							method: 'DELETE',
+							headers: { 'Content-Type': 'application/json' },
+							body: JSON.stringify({ name: placeName }),
+						});
+						item.remove();
+						document.querySelector('#my-lists-count').textContent = `${savedPlaces.length} saved places`;
+						document.querySelector('#my-lists-empty').hidden = savedPlaces.length > 0;
+						message.textContent = `${placeName} removed from your list.`;
+					} catch (error) {
+						message.textContent = error.message;
+					}
+				});
+			});
+		}
+
+		async function loadCatalogue() {
+			try {
+				if (worksSearch) {
+					const response = await fetch('/api/works');
+					if (!response.ok) throw new Error('The works catalogue could not be loaded.');
+					works = await response.json();
+					document.querySelector('#works-summary').textContent = `Explore ${works.length} works`;
+					renderWorkList();
+				}
+				if (placesSearch) {
+					const response = await fetch('/api/places');
+					if (!response.ok) throw new Error('The places catalogue could not be loaded.');
+					places = await response.json();
+					document.querySelector('#places-summary').textContent = `Explore ${places.length} cultural places`;
+					renderRegionFilters();
+					renderPlaceList();
+				}
+				if (document.querySelector('#metrics')) {
+					const response = await fetch('/api/overview');
+					if (!response.ok) throw new Error('The catalogue overview could not be loaded.');
+					renderOverview(await response.json());
+				}
+			} catch (error) {
+				status.textContent = `${error.message} Start the application with python main.py.`;
+			}
+		}
+
+		async function loadAccount() {
+			try {
+				const user = await requestJson('/api/session');
+				renderAccount(user.authenticated ? user : null);
+				if (user.authenticated && placesSearch) await loadSavedPlaces();
+			} catch (error) {
+				const authMessage = document.querySelector('#auth-message');
+				if (authMessage) authMessage.textContent = error.message;
+			}
+		}
+>>>>>>> e693cd4c8b12f3889e9a36dd116958e4e804bd08:templates/base.html
+
+</body>
+</html>

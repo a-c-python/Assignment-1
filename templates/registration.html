@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}Create account | Indigenous Art Finder{% endblock %}
+
+{% block page_content %}
+<section class="panel account-page" aria-labelledby="registration-title">
+	<h2 id="registration-title">Create your account</h2>
+	<p>Register to save cultural places to your list.</p>
+	<form id="auth-form" class="account-form">
+		<label for="username">
+			Username
+			<input id="username" name="username" autocomplete="username" minlength="3" maxlength="32" required>
+		</label>
+		<label for="password">
+			Password
+			<input id="password" name="password" type="password" autocomplete="new-password" minlength="8" maxlength="128" required>
+		</label>
+		<label for="recovery-email">
+			Recovery email (optional)
+			<input id="recovery-email" name="recovery_email" type="email" autocomplete="email" maxlength="254">
+		</label>
+		<button type="submit" data-action="register">Create account</button>
+	</form>
+	<form id="reset-form" class="account-form" hidden>
+		<label for="new-password">
+			New password
+			<input id="new-password" name="password" type="password" autocomplete="new-password" minlength="8" maxlength="128" required>
+		</label>
+		<button type="submit">Reset password</button>
+	</form>
+	<div id="account-panel" hidden>
+		<span id="account-name"></span>
+		<button type="button" id="logout-button">Log out</button>
+	</div>
+	<p class="auth-message" id="auth-message" role="status"></p>
+	<p>Already registered? <a href="{{ url_for('login_page') }}">Log in</a>.</p>
+</section>
+{% endblock %}

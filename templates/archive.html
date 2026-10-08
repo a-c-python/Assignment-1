@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %} Development of Art Centres | Indigenous Art Finder{% endblock %}
+
+{% block page_content %}
+<section class="panel" id="panel-archive">
+	<div class="section-head">
+		<h2>Indigenous Art Centres in Australia</h2>
+	</div>
+	<div class="analytics-top" id="metrics"></div>
+	<div class="analytics-grid">
+		<section class="chart-panel" aria-labelledby="founded-chart-title">
+			<h3 id="founded-chart-title">How Art Centres have Developed</h3>
+			<div id="founded-chart" aria-label="Cumulative line graph of places founded by year"></div>
+			<div class="timeline-list" id="timeline" aria-label="Founding timeline"></div>
+		</section>
+		<section class="chart-panel" aria-labelledby="state-chart-title">
+			<h3 id="state-chart-title">Locations by state</h3>
+			<div class="bar-list" id="state-chart"></div>
+		</section>
+		
+	</div>
+	<p class="status" id="archive-note"></p>
+</section>
+{% endblock %}

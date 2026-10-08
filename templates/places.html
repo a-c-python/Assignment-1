@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}Places | Indigenous Art Finder{% endblock %}
+
+{% block page_content %}
+<section class="panel" id="panel-places">
+	<div class="section-head">
+		<h2>Cultural places</h2>
+		<div class="section-meta" id="places-summary">Browse places to visit, learn and engage</div>
+	</div>
+	<div class="workspace">
+		<div class="browse-column">
+			<div class="browse-toolbar">
+				<label class="search-wrap">
+					<input class="search" id="places-search" type="search" placeholder="Search place, state, group…" autocomplete="off" aria-label="Search places by name, state, or group">
+				</label>
+				<div class="region-filters" id="region-filters" aria-label="Filter places by state"></div>
+				<div class="region-filters">
+					<button class="region-button" id="saved-places-filter" type="button" aria-pressed="false" disabled>My saved places</button>
+				</div>
+				<div class="browse-count"><span>PLACES</span><span id="places-count"></span></div>
+			</div>
+			<div class="record-list" id="places-list" aria-label="Cultural places"></div>
+		</div>
+		<article class="detail" id="place-detail" aria-live="polite">
+			<div class="placeholder"><p>Select a place to see its address, community details and visitor information.</p></div>
+		</article>
+	</div>
+</section>
+{% endblock %}
