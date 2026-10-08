@@ -273,6 +273,14 @@
 	</div>
 
 	<script>
+		if (!localStorage.getItem('opening message')) {
+			alert(`Welcome to Indigenous Art Finder Australia!
+			We would like to acknowledge the traditional owners of the lands and seas this site explores. We pay our respects to elders past and present and give our thanks to all Aboriginal and Torres Straight Islanders.
+			
+			Please be warned that this site may contain names of Aboriginal and Torres Straight Islanders who have passed away`); 
+			localStorage.setItem('opening message', 'true');
+		}
+		
 		const status = document.querySelector('#app-status');
 		let works = [];
 		let places = [];
