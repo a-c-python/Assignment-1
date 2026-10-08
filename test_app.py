@@ -118,6 +118,12 @@ def app_url():
         server_thread.join()                            # Tells the test to wait for the server thread to finish before continuing.
 
 
+def dismiss_welcome_dialog(page):
+    dialog = page.get_by_role("dialog")
+    if dialog.is_visible():
+        page.get_by_role("button", name="Continue to the homepage").click()
+
+
 @pytest.mark.parametrize(
     ("path", "panel_id"),
     [
@@ -197,6 +203,7 @@ def test_place_details_appear_when_clicked(page, app_url):
     )
 
     page.goto(app_url) # Tells the test to go to the app's main page.
+    dismiss_welcome_dialog(page)
     page.get_by_role("link", name="Places").click()
     page.get_by_role("button", name="Test Place").click() # Tells the test to click the button for the place named "Test Place".
     
@@ -238,7 +245,7 @@ def test_place_details_appear_when_clicked(page, app_url):
     assert year_founded.locator(".field-value").inner_text() == "2000"
 
     source = details.locator(".detail-grid > div").filter(
-    has_text="Listed source"
+    has_text="Information Source"
     )
     assert source.locator(".field-value").inner_text() == "ACH"
 
@@ -279,6 +286,7 @@ def test_work_details_appear_when_clicked(page, app_url):
         )
 
     page.goto(app_url) # Tells the test to go to the app's main page.
+    dismiss_welcome_dialog(page)
     page.get_by_role("button", name="Test Work").click() # Tells the test to click the button for the work named "Test Work".
 
     details = page.locator("#work-detail")
@@ -342,6 +350,7 @@ def test_filter_places_by_state(page, app_url):
     )
 
     page.goto(app_url)
+    dismiss_welcome_dialog(page)
     page.get_by_role("link", name="Places").click()
 
     place_names = page.locator("#places-list .record-title")
@@ -383,6 +392,7 @@ def test_works_searchbar(page, app_url):
     page.route( "**/api/session", lambda route: route.fulfill(json={"authenticated": False}))
 
     page.goto(app_url)
+    dismiss_welcome_dialog(page)
     page.get_by_role("link", name="Works").click()
 
     work_titles = page.locator("#works-list .record-title")
@@ -395,43 +405,43 @@ def test_works_searchbar(page, app_url):
     
     search.fill("Work A")
     assert work_titles.all_text_contents() == ["Work A"]
-    assert page.locator("#works-count").inner_text() == "1 / 5 works"
+    assert page.locator("#works-count").inner_text() == "1 / 5"
 
     search.fill("AUTHOR A")
     assert work_titles.all_text_contents() == ["Work A"]
-    assert page.locator("#works-count").inner_text() == "1 / 5 works"
+    assert page.locator("#works-count").inner_text() == "1 / 5"
     
     search.fill("painting")
     assert sorted(work_titles.all_text_contents()) == ["Work A", "Work E"]
-    assert page.locator("#works-count").inner_text() == "2 / 5 works"
+    assert page.locator("#works-count").inner_text() == "2 / 5"
 
     search.fill("oil on canvas")
     assert work_titles.all_text_contents() == ["Work E"]
-    assert page.locator("#works-count").inner_text() == "1 / 5 works"
+    assert page.locator("#works-count").inner_text() == "1 / 5"
 
     search.fill("Heritage D")
     assert work_titles.all_text_contents() == ["Work D"]
-    assert page.locator("#works-count").inner_text() == "1 / 5 works"
+    assert page.locator("#works-count").inner_text() == "1 / 5"
 
     search.fill("Location C")
     assert work_titles.all_text_contents() == ["Work C"]
-    assert page.locator("#works-count").inner_text() == "1 / 5 works"
+    assert page.locator("#works-count").inner_text() == "1 / 5"
 
     search.fill("2021")
     assert work_titles.all_text_contents() == ["Work C"]
-    assert page.locator("#works-count").inner_text() == "1 / 5 works"
+    assert page.locator("#works-count").inner_text() == "1 / 5"
 
     search.fill("Collection B")
     assert work_titles.all_text_contents() == ["Work B"]
-    assert page.locator("#works-count").inner_text() == "1 / 5 works"
+    assert page.locator("#works-count").inner_text() == "1 / 5"
 
     search.fill("Place A")
     assert work_titles.all_text_contents() == ["Work A"]
-    assert page.locator("#works-count").inner_text() == "1 / 5 works"
+    assert page.locator("#works-count").inner_text() == "1 / 5"
     
     search.fill("")
     assert sorted(work_titles.all_text_contents()) == ["Work A", "Work B", "Work C", "Work D", "Work E"]
-    assert page.locator("#works-count").inner_text() == "5 / 5 works"
+    assert page.locator("#works-count").inner_text() == "5 / 5"
 
 #Testing saved places list - places are saved to the list and can be retrieved and edited 
 
@@ -515,6 +525,7 @@ def test_user_can_remove_a_place_from_mylists(page, app_url, auth_client, monkey
         "secure": False,
     }])
     page.goto(f"{app_url}/mylists")
+    dismiss_welcome_dialog(page)
     page.get_by_role("button", name="Remove").click()
 
     page.get_by_text("Your list is empty.", exact=False).wait_for()

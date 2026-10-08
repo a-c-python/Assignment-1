@@ -1,13 +1,22 @@
-<!doctype html>	 				<!-- document type declaration for HTML5 -->
-<html lang="en">				<!-- language of the document is English -->
-<head>							<!-- storage container for the metadata (data about data) of the document -->
-	<meta charset="utf-8">	    <!-- character encoding for the document is UTF-8  -->
-	<meta name="viewport" content="width=device-width, initial-scale=1"> 				<!-- sets the viewport to the width of the device and the initial zoom level to 1  -->
-	<meta name="theme-color" content="#f4f2e9"> 										<!-- sets the theme color for the browser's address bar and task switcher to a light beige color  -->
-	<title>{% block title %} Indigenous Art Finder | Australia{% endblock %}</title> 	<!-- header title of the document, which is displayed in the browser's title bar or tab  -->
-	<link rel="preconnect" href="https://fonts.googleapis.com"> 						<!-- preconnect to the Google Fonts API to improve performance  -->
-	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> 				<!-- preconnect to the Google Fonts static content server with cross-origin requests allowed  -->
-	<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,500;6..72,600&display=swap" rel="stylesheet"> <!-- link to the Google Fonts stylesheet for the DM Sans and Newsreader fonts  -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">                                                          <!-- encoding for universal characters - shows all characters in text correctly -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">          <!-- ensures webpage layout scales to screen size to remain readable on different devices -->
+    <meta name="theme-color" content="#f4f2e9">                                     <!-- Makes the app look pretty by shifting the colour of the mobile browsers -->
+
+    <title>{% block title %} Indigenous Art Finder | Australia{% endblock %}</title>
+    <!-- Pre-connects to server which makes load time faster -->
+    <link rel="preconnect" href="https://fonts.googleapis.com"> 			        <!-- Font style sheet -->			
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> 	        <!-- Font file -->
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Newsreader:wght@500;600&display=swap" rel="stylesheet">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="style.css">
+
 	<style>
 		:root {						/* colour scheme and font family variables for the document */
 			color-scheme: light;
@@ -25,17 +34,31 @@
 		}
 
 		* { box-sizing: border-box; }	/* Adds padding around the border of elements in the document */
-		.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
-		body { /* main contents of app */
-			margin: 0;
-			color: var(--ink);
-			background-color: var(--paper);
-			background-image: repeating-linear-gradient(135deg, transparent 0 22px, rgb(29 73 58 / 2.5%) 22px 23px);
-			font-family: var(--sans);
+		
+		
+		/* screen reader accessibility element - made tiny and invisible on screen but readable to screen readers */
+		.sr-only { position: absolute; 
+   		 width: 1px; 
+   		 height: 1px; 
+   		 padding: 0; 
+   		 margin: -1px; 
+   		 overflow: hidden; 
+   		 clip: rect(0, 0, 0, 0); 
+   	 	white-space: nowrap; 
+   	 	border: 0; }
+
+		body {
+    		margin: 0;
+    		background: var(--paper);  /* flat background colour */
+    		color: var(--ink);
+    		font-family: var(--sans);   /* Used for switchable fonts, defined in root */
 			font-size: 14px;
 		}
-		button, input { font: inherit; }	/* Applies style rules to both button and imput */
-		button { color: inherit; }			/* Gives each button the same colour as parent element */
+
+		/* Applies style rules to both button and imput across the app */
+		button, input { font: inherit; }	
+		button { color: inherit; }	
+		
 		.shell { width: min(1280px, 100%); margin: 0 auto; padding: 0 36px 48px; } /* page container structure (webpage content boundaries) */
 		.masthead {							/* header element style settings */
 			min-height: 102px;
@@ -195,6 +218,12 @@
 		.timeline-year { display: block; color: var(--forest); font-size: 11px; font-weight: 700; }
 		.timeline-count { display: block; margin-top: 4px; color: var(--muted); font-size: 11px; }
 		.status { min-height: 20px; margin: 14px 0 0; color: var(--muted); font-size: 11px; }
+		.welcome-dialog { width: min(520px, calc(100% - 32px)); padding: 25px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); }
+		.welcome-dialog::backdrop { background: rgb(20 35 27 / 55%); }
+		.welcome-dialog h2 { margin-bottom: 14px; }
+		.welcome-dialog p { color: var(--muted); line-height: 1.6; }
+		.welcome-dialog button { min-height: 38px; margin-top: 8px; padding: 0 14px; border: 1px solid var(--forest); background: var(--forest); color: #fff; cursor: pointer; font-weight: 600; }
+		.welcome-dialog button:hover { background: #15392d; }
 		#archive-note {white-space: pre-line;}
 		footer { display: flex; justify-content: space-between; gap: 12px; margin-top: 22px; padding-top: 13px; border-top: 1px solid var(--line); color: var(--muted); font-size: 10px; flex-direction: column;}
 		@media (max-width: 760px) {
@@ -272,14 +301,23 @@
 		</footer>
 	</div>
 
+	<dialog class="welcome-dialog" id="welcome-dialog" aria-labelledby="welcome-title">
+		<h2 id="welcome-title">Welcome to Indigenous Art Finder Australia</h2>
+		<p>We acknowledge the traditional owners of the lands and seas this site explores. We pay our respects to Elders past and present, and give our thanks to all Aboriginal and Torres Strait Islander peoples.</p>
+		<p>Please be warned that this site may contain names of Aboriginal and Torres Strait Islander peoples who have passed away.</p>
+		<form method="dialog">
+			<button autofocus>Continue to the homepage</button>
+		</form>
+	</dialog>
+
 	<script>
-		if (!localStorage.getItem('opening message')) {
-			alert(`Welcome to Indigenous Art Finder Australia!
-			We would like to acknowledge the traditional owners of the lands and seas this site explores. We pay our respects to elders past and present and give our thanks to all Aboriginal and Torres Straight Islanders.
-			
-			Please be warned that this site may contain names of Aboriginal and Torres Straight Islanders who have passed away`); 
+		const welcomeDialog = document.querySelector('#welcome-dialog');
+		welcomeDialog.addEventListener('close', () => {
 			localStorage.setItem('opening message', 'true');
-		}
+		});
+		window.addEventListener('load', () => {
+			if (!localStorage.getItem('opening message')) welcomeDialog.showModal();
+		});
 		
 		const status = document.querySelector('#app-status');
 		let works = [];
@@ -490,7 +528,7 @@
 				field('Date created', work.dateCreated),
 				field('Collection', work.collection, true),
 				field('Where the work is housed', work.housedAt, true),
-				feild('Information sourced from', work.source, true),
+				field('Information sourced from', work.source, true),
 			);
 			detail.append(kicker, title, byline, rule, grid);
 			renderWorkList(document.querySelector('#works-search').value);
