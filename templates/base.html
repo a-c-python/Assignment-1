@@ -72,6 +72,7 @@
 		.auth-panel button:hover, .place-action:hover { background: #15392d; }
 		.auth-panel #logout-button, .place-action.secondary { background: transparent; color: var(--forest); }
 		.account-page { max-width: 440px; margin: 22px auto; padding: 22px; border: 1px solid var(--line); background: var(--surface); }
+		.account-page .header-actions {flex-direction: column; align-items: center;}
 		.account-form { display: grid; gap: 12px; margin-top: 16px; }
 		.account-form label { display: grid; gap: 5px; color: var(--muted); font-size: 12px; }
 		.account-form input { width: 100%; min-height: 38px; padding: 0 10px; border: 1px solid var(--line); }
@@ -426,7 +427,7 @@
 			const matches = works.filter((work) => Object.values(work).join(' ').toLocaleLowerCase().includes(normalized));
 			const list = document.querySelector('#works-list');
 			list.replaceChildren();
-			document.querySelector('#works-count').textContent = `${matches.length} / ${works.length} works`;
+			document.querySelector('#works-count').textContent = `${matches.length} / ${works.length}`;
 			if (!matches.length) {
 				list.innerHTML = '<div class="empty-state">No works match that search.</div>';
 				return;
@@ -475,6 +476,7 @@
 				field('Date created', work.dateCreated),
 				field('Collection', work.collection, true),
 				field('Where the work is housed', work.housedAt, true),
+				feild('Information sourced from', work.source, true),
 			);
 			detail.append(kicker, title, byline, rule, grid);
 			renderWorkList(document.querySelector('#works-search').value);
@@ -590,7 +592,7 @@
 				field('Indigenous owned and run', place.aboriginalOwned),
 				field('Type of interaction', place.interactions),
 				field('Year founded', place.yearFounded),
-				field('Sourced at', place.source, true),
+				field('Information Source', place.source, true),
 			);
 			if (place.associatedWith?.trim()) {
    			 grid.append(field('Associated with', place.associatedWith, true));
@@ -816,14 +818,14 @@
 					const response = await fetch('/api/works');
 					if (!response.ok) throw new Error('The works catalogue could not be loaded.');
 					works = await response.json();
-					document.querySelector('#works-summary').textContent = `${works.length} works in the catalogue`;
+					document.querySelector('#works-summary').textContent = `Explore ${works.length} works`;
 					renderWorkList();
 				}
 				if (placesSearch) {
 					const response = await fetch('/api/places');
 					if (!response.ok) throw new Error('The places catalogue could not be loaded.');
 					places = await response.json();
-					document.querySelector('#places-summary').textContent = `${places.length} cultural places in the catalogue`;
+					document.querySelector('#places-summary').textContent = `Explore ${places.length} cultural places`;
 					renderRegionFilters();
 					renderPlaceList();
 				}

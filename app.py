@@ -217,6 +217,7 @@ def get_works():
 			"year": int(year_match.group()) if year_match else None,
 			"collection": row.get("Collection", "").strip(),
 			"housedAt": row.get("Item Housed", "").strip(),
+			"source":row.get("Source", "").strip(),
 		})
 	return works
 
