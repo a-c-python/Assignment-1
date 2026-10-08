@@ -60,9 +60,9 @@
 		.brand-subtitle { margin-top: 6px; color: var(--muted); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; } /* app subtitle */
 		.masthead-note { color: var(--muted); font-size: 12px; text-align: right; } 			   /* app tagline/motto/ oneline explination */
 		.header-actions { display: flex; align-items: center; gap: 8px; }
-		.header-link { display: inline-flex; align-items: center; justify-content: center; min-height: 34px; padding: 0 11px; border: 1px solid var(--forest); background: var(--forest); color: #fff; text-decoration: none; font-size: 11px; font-weight: 600; }
+		.header-link { display: inline-flex; align-items: center; justify-content: center; min-height: 34px; padding: 0 11px; border: 1px solid var(--forest); background: var(--forest); color: #fff; text-decoration: none; font-size: 11px; font-weight: 600; width: 80px;}
 		.header-link:hover { background: #15392d; }
-		.header-link.secondary { background: transparent; color: var(--forest); }
+		.header-link.secondary { background: transparent; color: var(--forest); width: 80px}
 		.header-link.secondary:hover { background: #edf2ee; }
 		.auth-panel { display: flex; align-items: center; justify-content: flex-end; gap: 8px; }   /* box layout for input (login or searchbars) */
 		.auth-panel form { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 6px; }  /*  */
@@ -71,8 +71,10 @@
 		.auth-panel button, .place-action { min-height: 34px; padding: 0 11px; border: 1px solid var(--forest); background: var(--forest); color: #fff; cursor: pointer; font-size: 11px; font-weight: 600; }
 		.auth-panel button:hover, .place-action:hover { background: #15392d; }
 		.auth-panel #logout-button, .place-action.secondary { background: transparent; color: var(--forest); }
+		.archive-footer {margin-top: 15px}
 		.account-page { max-width: 440px; margin: 22px auto; padding: 22px; border: 1px solid var(--line); background: var(--surface); }
 		.account-page .header-actions {flex-direction: column; align-items: center;}
+		.account-page .mylists-login,.account-page .mylists-register {width: 80px;}
 		.account-form { display: grid; gap: 12px; margin-top: 16px; }
 		.account-form label { display: grid; gap: 5px; color: var(--muted); font-size: 12px; }
 		.account-form input { width: 100%; min-height: 38px; padding: 0 10px; border: 1px solid var(--line); }
@@ -89,6 +91,8 @@
 		.tabs { display: flex; border-bottom: 1px solid var(--line); gap: 4px; }
 		.my-lists { display: grid; gap: 8px; max-width: 760px; margin: 18px 0; padding: 0; list-style: none; }
 		.my-list-item { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 14px 16px; border: 1px solid var(--line); background: var(--surface); }
+		.mylists-login {width: 70px;}
+		.mylists-register {width: 70px;}
 		.my-list-item > div { min-width: 0; overflow-wrap: anywhere; }
 		.my-list-item h3, .my-list-item p { margin: 0; }
 		.my-list-item h3 { font: 600 16px var(--serif); }
@@ -235,7 +239,7 @@
 	<div class="shell">
 		<header class="masthead">
 			<div class="brand">
-				<div class="brand-mark" aria-hidden="true">C</div>
+				<div class="brand-mark" aria-hidden="true">IAF</div>
 				<div>
 					<div class="brand-name">Indigenous Art Finder </div>
 					<div class="brand-subtitle">Australia</div>
@@ -260,8 +264,10 @@
 			<p class="status" id="app-status" role="status"></p>
 		</main>
 
-		<footer>
-			<span>This graphs are based on the data sourced via each institute's website, affiliated organisations, and/or articles about the institution. Please keep in mind that these graphs may contain inaccuracies due to the informal nature of organisations formation and/or poor records.</span>
+		<footer class="{% if active_page == 'archive' %}archive-footer{% endif %}">
+			{% if active_page == 'archive' %}
+				<span>This graphs are based on the data sourced via each institute's website, affiliated organisations, and/or articles about the institution. Please keep in mind that these graphs may contain inaccuracies due to the informal nature of organisations formation and/or poor records.</span>
+			{% endif%}
 			<span>Indigenous Art Finder, 2026</span>
 		</footer>
 	</div>
