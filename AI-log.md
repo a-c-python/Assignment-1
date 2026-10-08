@@ -24,3 +24,6 @@
 
 #07/10/2026, VS Code, used AI to restructure my code so that each page has its own html file, instead of sharing one file, checked the code, added pages and app routes for better app formatting
     #Prompt: Can you split-up the template's index.html file into a html file for each 'tab', and ensure that the test and app functions align with this new formatting? Please explain any changes to app.py that you make for this
+
+#08.10.2026, Chat GPT, Used AI to reorganise and cleanup existing code structure without changing the functionality. The code was separated into HTML, CSS, and JavaScript files to make the project easier to understand and maintain, 
+    #Prompt - “Can you help me organise this code by separating the HTML, CSS, and JavaScript into three separate files? Please keep the code and functionality as close to the original as possible, and add comments explaining what each section does. Do not make any major design or functionality changes.”
