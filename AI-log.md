@@ -26,4 +26,7 @@
     #Prompt: Can you split-up the template's index.html file into a html file for each 'tab', and ensure that the test and app functions align with this new formatting? Please explain any changes to app.py that you make for this
 
 #08.10.2026, Chat GPT, Used AI to reorganise and cleanup existing code structure without changing the functionality. The code was separated into HTML, CSS, and JavaScript files to make the project easier to understand and maintain, 
-    #Prompt - “Can you help me organise this code by separating the HTML, CSS, and JavaScript into three separate files? Please keep the code and functionality as close to the original as possible, and add comments explaining what each section does. Do not make any major design or functionality changes.”
+    #Prompt; Can you help me organise this code by separating the HTML, CSS, and JavaScript into three separate files? Please keep the code and functionality as close to the original as possible, and add comments explaining what each section does. Do not make any major design or functionality changes.
+
+#08.1 0.2026, Chat GPT, AI provided steps on preparing our app and deploying it to Render, including some slight code changes. I updated the required deployment settings and prepared the app for deployment without changing its existing functionality. 
+    #Prompt: Can you give me step by step instructions for deploying my app from GitHub to Render? Include what I need to check or change in my code, requirements file, GitHub repository, and Render settings before deploying, while keeping the existing functionality of the app the same.
