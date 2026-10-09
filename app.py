@@ -16,14 +16,14 @@ from urllib.parse import quote, urlsplit
 from flask import Flask, jsonify, render_template, request, session
 from werkzeug.security import check_password_hash, generate_password_hash
 
-app = Flask(__name__)	# Creates app
+app = Flask("__name__")	# Creates app
 app.config["DATABASE"] = os.environ.get(
 	"DATABASE_PATH",
 	os.path.join(os.path.dirname(os.path.abspath(__file__)), "data", "app.sqlite3"),
 )
 app.config["SESSION_COOKIE_HTTPONLY"] = True
 app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
-app.config["SESSION_COOKIE_SECURE"] = os.environ.get("SESSION_COOKIE_SECURE", "false").lower() == "true"
+app.config["SESSION_COOKIE_SECURE"] = os.environ.get("SESSION_COOKIE_SECURE", "true").lower() == "true"
 BASE_DIR = os.path.dirname(os.path.abspath(__file__)) # Tells app where to find its files
 REGION_CODES = ("NSW", "VIC", "QLD", "SA", "WA", "TAS", "NT") # Gives regional codes
 

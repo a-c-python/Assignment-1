@@ -2,284 +2,908 @@
 <html lang="en">
 
 <head>
-    <!--
-        ============================================================
-        DOCUMENT SETUP
-        ============================================================
-        This section contains information about the webpage itself,
-        including character encoding, responsive sizing and fonts.
-    -->
+    <meta charset="UTF-8">                                                          <!-- encoding for universal characters - shows all characters in text correctly -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">          <!-- ensures webpage layout scales to screen size to remain readable on different devices -->
+    <meta name="theme-color" content="#f4f2e9">                                     <!-- Makes the app look pretty by shifting the colour of the mobile browsers -->
 
-    <meta charset="UTF-8">
+    <title>{% block title %} Indigenous Art Finder | Australia{% endblock %}</title>
+    <!-- Pre-connects to server which makes load time faster -->
+    <link rel="preconnect" href="https://fonts.googleapis.com"> 			        <!-- Font style sheet -->			
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> 	        <!-- Font file -->
 
-    <!-- Makes the layout responsive on phones, tablets and computers -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Newsreader:wght@500;600&display=swap" rel="stylesheet">
 
-    <!-- Controls the colour shown by some mobile browsers -->
-    <meta name="theme-color" content="#f4f2e9">
+    <!-- CSS -->
+    <link rel="stylesheet" href="style.css">
 
-    <title>
-        {% block title %}
-            Indigenous Art Finder | Australia
-        {% endblock %}
-    </title>
+	<style>
+		:root {						/* colour scheme and font family variables for the document */
+			color-scheme: light;
+			--paper: #f4f2e9;
+			--surface: #fffefa;
+			--ink: #202b24;
+			--muted: #68736a;
+			--line: #d9ddd3;
+			--forest: #1d493a;
+			--leaf: #63865a;
+			--ochre: #bd583c;
+			--gold: #cf9e3d;
+			--sans: "DM Sans", "Segoe UI", sans-serif;
+			--serif: "Newsreader", Georgia, serif;
+		}
 
+		* { box-sizing: border-box; }	/* Adds padding around the border of elements in the document */
+		
+		
+		/* screen reader accessibility element - made tiny and invisible on screen but readable to screen readers */
+		.sr-only { position: absolute; 
+   		 width: 1px; 
+   		 height: 1px; 
+   		 padding: 0; 
+   		 margin: -1px; 
+   		 overflow: hidden; 
+   		 clip: rect(0, 0, 0, 0); 
+   	 	white-space: nowrap; 
+   	 	border: 0; }
 
-    <!--
-        ============================================================
-        FONTS
-        ============================================================
-        Google Fonts provides the two fonts used throughout the app.
-        DM Sans is used for most text.
-        Newsreader is used for headings.
-    -->
+		body {
+    		margin: 0;
+    		background: var(--paper);  /* flat background colour */
+    		color: var(--ink);
+    		font-family: var(--sans);   /* Used for switchable fonts, defined in root */
+			font-size: 14px;
+		}
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-    <link
-        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Newsreader:wght@500;600&display=swap"
-        rel="stylesheet"
-    >
-
-
-    <!-- Main stylesheet -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+		/* Applies style rules to both button and imput across the app */
+		button, input { font: inherit; }	
+		button { color: inherit; }	
+		
+		.shell { width: min(1280px, 100%); margin: 0 auto; padding: 0 36px 48px; } /* page container structure (webpage content boundaries) */
+		.masthead {							/* header element style settings */
+			min-height: 102px;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			gap: 24px;
+			border-bottom: 1px solid var(--line);
+		}
+		.brand { display: flex; align-items: center; gap: 14px; } /* container for brand name, logo, and text (inside header) */
+		.brand-mark {										   	/* app logo (inside header) */
+			width: 42px;
+			height: 42px;
+			display: grid;
+			place-items: center;
+			border: 1px solid var(--forest);
+			color: var(--forest);
+			font: 600 21px var(--serif);
+			transform: rotate(-3deg);
+		}
+		.brand-name { font: 600 22px/1 var(--serif); }										       /* app name (inside header) */
+		.brand-subtitle { margin-top: 6px; color: var(--muted); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; } /* app subtitle */
+		.masthead-note { color: var(--muted); font-size: 12px; text-align: right; } 			   /* app tagline/motto/ oneline explination */
+		.header-actions { display: flex; align-items: center; gap: 8px; }
+		.header-link { display: inline-flex; align-items: center; justify-content: center; min-height: 34px; padding: 0 11px; border: 1px solid var(--forest); background: var(--forest); color: #fff; text-decoration: none; font-size: 11px; font-weight: 600; width: 80px;}
+		.header-link:hover { background: #15392d; }
+		.header-link.secondary { background: transparent; color: var(--forest); width: 80px}
+		.header-link.secondary:hover { background: #edf2ee; }
+		.auth-panel { display: flex; align-items: center; justify-content: flex-end; gap: 8px; }   /* box layout for input (login or searchbars) */
+		.auth-panel form { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 6px; }  /*  */
+		.auth-panel input { width: 132px; min-height: 34px; padding: 0 8px; border: 1px solid var(--line); }
+		.auth-panel input[type="email"] { width: 170px; }
+		.auth-panel button, .place-action { min-height: 34px; padding: 0 11px; border: 1px solid var(--forest); background: var(--forest); color: #fff; cursor: pointer; font-size: 11px; font-weight: 600; }
+		.auth-panel button:hover, .place-action:hover { background: #15392d; }
+		.auth-panel #logout-button, .place-action.secondary { background: transparent; color: var(--forest); }
+		.archive-footer {margin-top: 15px}
+		.account-page { max-width: 440px; margin: 22px auto; padding: 22px; border: 1px solid var(--line); background: var(--surface); }
+		.account-page .header-actions {flex-direction: column; align-items: center;}
+		.account-page .mylists-login,.account-page .mylists-register {width: 80px;}
+		.account-form { display: grid; gap: 12px; margin-top: 16px; }
+		.account-form label { display: grid; gap: 5px; color: var(--muted); font-size: 12px; }
+		.account-form input { width: 100%; min-height: 38px; padding: 0 10px; border: 1px solid var(--line); }
+		.account-form button { min-height: 36px; padding: 0 12px; border: 1px solid var(--forest); background: var(--forest); color: #fff; cursor: pointer; font-size: 12px; font-weight: 600; }
+		.account-form button:hover { background: #15392d; }
+		.account-page > p { color: var(--muted); }
+		.auth-message { margin: 0; color: var(--muted); font-size: 11px; }
+		.place-action { margin-top: 18px; }
+		.place-action:disabled { cursor: not-allowed; opacity: .7; }
+		.intro { padding: 31px 0 23px; display: flex; align-items: end; justify-content: space-between; gap: 24px; }
+		.eyebrow { color: var(--ochre); font-size: 11px; font-weight: 700; letter-spacing: .13em; text-transform: uppercase; }
+		h1 { margin: 8px 0 0; font: 500 37px/1.05 var(--serif); }
+		.intro-copy { max-width: 345px; margin: 0; color: var(--muted); line-height: 1.55; }
+		.tabs { display: flex; border-bottom: 1px solid var(--line); gap: 4px; }
+		.my-lists { display: grid; gap: 8px; max-width: 760px; margin: 18px 0; padding: 0; list-style: none; }
+		.my-list-item { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 14px 16px; border: 1px solid var(--line); background: var(--surface); }
+		.mylists-login {width: 70px;}
+		.mylists-register {width: 70px;}
+		.my-list-item > div { min-width: 0; overflow-wrap: anywhere; }
+		.my-list-item h3, .my-list-item p { margin: 0; }
+		.my-list-item h3 { font: 600 16px var(--serif); }
+		.my-list-item p { margin-top: 5px; color: var(--muted); font-size: 12px; }
+		.my-list-item .place-action { flex: 0 0 auto; margin: 0; }
+		.tab {
+			position: relative;
+			min-height: 49px;
+			padding: 0 18px;
+			border: 0;
+			background: transparent;
+			color: var(--muted);
+			cursor: pointer;
+			font-size: 13px;
+			font-weight: 600;
+		}
+		.tab span { margin-right: 9px; color: var(--ochre); font-size: 10px; }
+		.tab { display: inline-flex; align-items: center; text-decoration: none; }
+		.tab[aria-current="page"] { color: var(--forest); }
+		.tab[aria-current="page"]::after { position: absolute; right: 12px; bottom: -1px; left: 12px; height: 3px; background: var(--forest); content: ""; }
+		.panel { padding-top: 22px; }
+		[hidden] { display: none !important; }
+		.section-head { display: flex; align-items: end; justify-content: space-between; gap: 18px; margin-bottom: 15px; }
+		h2 { margin: 0; font: 500 25px/1.1 var(--serif); }
+		.section-meta { color: var(--muted); font-size: 12px; }
+		.workspace { display: grid; grid-template-columns: minmax(270px, .82fr) minmax(0, 1.55fr); min-height: 510px; border: 1px solid var(--line); background: var(--surface); }
+		.browse-column { min-width: 0; border-right: 1px solid var(--line); }
+		.browse-toolbar { padding: 15px; border-bottom: 1px solid var(--line); }
+		.search-wrap { position: relative; }
+		.search-wrap::before { position: absolute; top: 11px; left: 12px; color: var(--muted); content: "⌕"; font-size: 19px; line-height: 1; }
+		.search {
+			width: 100%;
+			height: 40px;
+			padding: 0 12px 0 37px;
+			border: 1px solid var(--line);
+			border-radius: 2px;
+			outline: none;
+			background: #fff;
+			color: var(--ink);
+		}
+		.search:focus { border-color: var(--forest); box-shadow: 0 0 0 2px rgb(29 73 58 / 10%); }
+		.browse-count { display: flex; justify-content: space-between; padding-top: 12px; color: var(--muted); font-size: 11px; }
+		.record-list { max-height: 430px; overflow: auto; }
+		.record-button {
+			width: 100%;
+			display: block;
+			padding: 13px 16px;
+			border: 0;
+			border-bottom: 1px solid #eceee8;
+			border-left: 3px solid transparent;
+			background: transparent;
+			cursor: pointer;
+			text-align: left;
+		}
+		.record-button:hover { background: #f7f8f2; }
+		.record-button[aria-current="true"] { border-left-color: var(--ochre); background: #f6f5ed; }
+		.record-title { display: block; font: 600 16px/1.25 var(--serif); }
+		.record-subtitle { display: block; margin-top: 5px; color: var(--muted); font-size: 12px; line-height: 1.4; }
+		.record-tag { display: inline-block; margin-top: 7px; color: var(--forest); font-size: 10px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; }
+		.region-filters { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 13px; }
+		.region-button { min-height: 29px; padding: 0 8px; border: 1px solid var(--line); border-radius: 2px; background: transparent; color: var(--muted); cursor: pointer; font-size: 10px; font-weight: 700; }
+		.region-button:hover, .region-button[aria-pressed="true"] { border-color: var(--forest); background: var(--forest); color: #fff; }
+		.detail { padding: 27px 30px; min-width: 0; }
+		.detail-kicker { color: var(--ochre); font-size: 10px; font-weight: 700; letter-spacing: .13em; text-transform: uppercase; }
+		.detail h3 { margin: 9px 0 7px; font: 500 31px/1.1 var(--serif); overflow-wrap: anywhere; }
+		.detail-byline { margin: 0; color: var(--muted); font-size: 14px; }
+		.detail-rule { height: 1px; margin: 23px 0; background: var(--line); }
+		.detail-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 21px 24px; }
+		.field-label { display: block; margin-bottom: 5px; color: var(--muted); font-size: 10px; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; }
+		.field-value { display: block; font-size: 13px; line-height: 1.5; overflow-wrap: anywhere; }
+		.field-wide { grid-column: 1 / -1; }
+		.empty-state { padding: 24px 16px; color: var(--muted); line-height: 1.5; }
+		.placeholder { min-height: 330px; display: grid; place-items: center; color: var(--muted); text-align: center; }
+		.placeholder p { max-width: 260px; line-height: 1.6; }
+		.place-flags { display: flex; flex-wrap: wrap; gap: 7px; margin: 18px 0 0; }
+		.flag { padding: 5px 8px; border: 1px solid var(--line); color: var(--forest); font-size: 10px; font-weight: 600; }
+		.analytics-top { display: grid; grid-template-columns: repeat(3, 1fr); margin-bottom: 18px; border: 1px solid var(--line); background: var(--surface); }
+		.metric { padding: 17px 20px; border-right: 1px solid var(--line); }
+		.metric:last-child { border: 0; }
+		.metric-value { display: block; font: 500 29px/1 var(--serif); color: var(--forest); }
+		.metric-label { display: block; margin-top: 6px; color: var(--muted); font-size: 11px; }
+		.analytics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+		.chart-panel, .timeline-panel { padding: 19px 21px; border: 1px solid var(--line); background: var(--surface); }
+		.chart-panel h3, .timeline-panel h3 { margin: 0 0 17px; font: 500 20px/1.1 var(--serif); }
+		.bar-list { display: grid; gap: 13px; }
+		.bar-row { display: grid; grid-template-columns: minmax(72px, 110px) minmax(40px, 1fr) 25px; align-items: center; gap: 9px; font-size: 11px; }
+		.bar-label { overflow: hidden; color: var(--muted); text-overflow: ellipsis; white-space: nowrap; }
+		.bar-track { height: 9px; background: #edf0e9; }
+		.bar-fill { height: 100%; min-width: 2px; background: var(--leaf); }
+		.bar-row:nth-child(3n + 2) .bar-fill { background: var(--ochre); }
+		.bar-row:nth-child(3n) .bar-fill { background: var(--gold); }
+		.bar-count { text-align: right; font-weight: 700; }
+		.line-chart { width: 100%; height: auto; display: block; overflow: visible; }
+		.chart-axis { stroke: var(--line); stroke-width: 1; }
+		.chart-line { fill: none; stroke: var(--forest); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+		.chart-point { fill: var(--ochre); stroke: var(--surface); stroke-width: 2; }
+		.chart-label { fill: var(--muted); font: 11px var(--sans); }
+		.timeline-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 8px; margin-top: 14px; }
+		.timeline-item { padding: 9px 10px; border-left: 2px solid var(--ochre); background: #f7f8f2; }
+		.timeline-year { display: block; color: var(--forest); font-size: 11px; font-weight: 700; }
+		.timeline-count { display: block; margin-top: 4px; color: var(--muted); font-size: 11px; }
+		.status { min-height: 20px; margin: 14px 0 0; color: var(--muted); font-size: 11px; }
+		.welcome-dialog { width: min(520px, calc(100% - 32px)); padding: 25px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); }
+		.welcome-dialog::backdrop { background: rgb(20 35 27 / 55%); }
+		.welcome-dialog h2 { margin-bottom: 14px; }
+		.welcome-dialog p { color: var(--muted); line-height: 1.6; }
+		.welcome-dialog button { min-height: 38px; margin-top: 8px; padding: 0 14px; border: 1px solid var(--forest); background: var(--forest); color: #fff; cursor: pointer; font-weight: 600; }
+		.welcome-dialog button:hover { background: #15392d; }
+		#archive-note {white-space: pre-line;}
+		footer { display: flex; justify-content: space-between; gap: 12px; margin-top: 22px; padding-top: 13px; border-top: 1px solid var(--line); color: var(--muted); font-size: 10px; flex-direction: column;}
+		@media (max-width: 760px) {
+			.shell { padding: 0 18px 32px; }
+			.masthead { min-height: 81px; flex-wrap: wrap; }
+			.masthead-note { display: none; }
+			.header-actions { flex-basis: 100%; justify-content: flex-start; padding-bottom: 12px; }
+			.auth-panel { flex-basis: 100%; justify-content: flex-start; padding-bottom: 12px; }
+			.auth-panel form { justify-content: flex-start; }
+			.intro { align-items: start; flex-direction: column; gap: 11px; padding-top: 25px; }
+			h1 { font-size: 32px; }
+			.intro-copy { max-width: 500px; }
+			.tabs { overflow-x: auto; }
+			.tab { flex: 0 0 auto; padding: 0 12px; }
+			.workspace { grid-template-columns: 1fr; }
+			.browse-column { border-right: 0; border-bottom: 1px solid var(--line); }
+			.record-list { max-height: 265px; }
+			.detail { padding: 22px 18px; }
+			.detail h3 { font-size: 27px; }
+			.analytics-grid { grid-template-columns: 1fr; }
+			.timeline-panel { grid-column: auto; }
+			.chart-panel { padding: 17px; }
+		}
+		@media (max-width: 430px) {
+			.brand-name { font-size: 19px; }
+			.brand-mark { width: 37px; height: 37px; }
+			.section-head { align-items: start; flex-direction: column; gap: 7px; }
+			.detail-grid { gap: 17px 13px; }
+			.analytics-top { grid-template-columns: 1fr 1fr; }
+			.metric { padding: 14px; }
+			.metric:nth-child(2) { border-right: 0; }
+			.metric:last-child { grid-column: 1 / -1; border-top: 1px solid var(--line); }
+			footer { flex-direction: column; }
+		}
+		@media (prefers-reduced-motion: no-preference) {
+			.panel:not([hidden]) { animation: arrive 180ms ease-out both; }
+			@keyframes arrive { from { opacity: .5; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+		}
+	</style>
 </head>
-
-
 <body>
+	<div class="shell">
+		<header class="masthead">
+			<div class="brand">
+				<div class="brand-mark" aria-hidden="true">IAF</div>
+				<div>
+					<div class="brand-name">Indigenous Art Finder </div>
+					<div class="brand-subtitle">Australia</div>
+				</div>
+			</div>
+			<div class="masthead-note">Explore art centres and browse artworks</div>
+			<nav class="header-actions" aria-label="Account">
+				<a class="header-link secondary" href="{{ url_for('login_page') }}">Log in/out</a>
+				<a class="header-link" href="{{ url_for('registration_page') }}">Register</a>
+			</nav>
+		</header>
 
-    <!--
-        ============================================================
-        MAIN PAGE CONTAINER
-        ============================================================
-        The shell keeps the content centred and prevents the page
-        from becoming too wide on large screens.
-    -->
+		<main> 														<!-- page's main content area -->
+			<nav class="tabs" aria-label="Catalogue sections">		<!-- navigates via tabs, aria-label lets assistive technology (screen readers) read the tab purpose -->
+				<a class="tab" href="{{ url_for('works_page') }}" {% if active_page == 'works' %}aria-current="page"{% endif %}>Works</a>	<!-- class='tab', styles tabs according to style guides, links to works.html, aria identifies current page to assistive tech readers,  -->
+				<a class="tab" href="{{ url_for('places_page') }}" {% if active_page == 'places' %}aria-current="page"{% endif %}>Places</a>
+				<a class="tab" href="{{ url_for('archive_page') }}" {% if active_page == 'archive' %}aria-current="page"{% endif %}>Development of Art Centres</a>
+				<a class="tab" href="{{ url_for('mylists_page') }}" {% if active_page == 'mylists' %}aria-current="page"{% endif %}>My Places</a>
+			</nav>
 
-    <div class="shell">
+			{% block page_content %}{% endblock %}	<!-- defines Jinja template block - allows a parent skeleton html, and 'child' pages - pages that hold the info specifically for the tab or 'page' -->
+			<p class="status" id="app-status" role="status"></p>
+		</main>
 
+		<footer class="{% if active_page == 'archive' %}archive-footer{% endif %}">
+			{% if active_page == 'archive' %}
+				<span>This graphs are based on the data sourced via each institute's website, affiliated organisations, and/or articles about the institution. Please keep in mind that these graphs may contain inaccuracies due to the informal nature of organisations formation and/or poor records.</span>
+			{% endif%}
+			<span>Indigenous Art Finder, 2026</span>
+		</footer>
+	</div>
 
-        <!--
-            ========================================================
-            HEADER
-            ========================================================
-            Contains the application name, subtitle and navigation
-            buttons for logging in/registering.
-        -->
+	<dialog class="welcome-dialog" id="welcome-dialog" aria-labelledby="welcome-title">
+		<h2 id="welcome-title">Welcome to Indigenous Art Finder Australia</h2>
+		<p>We acknowledge the traditional owners of the lands and seas this site explores. We pay our respects to Elders past and present, and give our thanks to all Aboriginal and Torres Strait Islander peoples.</p>
+		<p>Please be warned that this site may contain names of Aboriginal and Torres Strait Islander peoples who have passed away.</p>
+		<form method="dialog">
+			<button autofocus>Continue to the homepage</button>
+		</form>
+	</dialog>
 
-        <header class="masthead">
+	<script>
+		const welcomeDialog = document.querySelector('#welcome-dialog');
+		welcomeDialog.addEventListener('close', () => {
+			localStorage.setItem('opening message', 'true');
+		});
+		window.addEventListener('load', () => {
+			if (!localStorage.getItem('opening message')) welcomeDialog.showModal();
+		});
+		
+		const status = document.querySelector('#app-status');
+		let works = [];
+		let places = [];
+		let savedPlaceNames = new Set();
+		let currentUsername = null;
+		let loginFailed = false;
+		let showingSavedPlaces = false;
+		let selectedPlaceState = 'ALL';
+		const regions = [
+			['NSW', 'New South Wales'], ['VIC', 'Victoria'], ['QLD', 'Queensland'],
+			['SA', 'South Australia'], ['WA', 'Western Australia'], ['TAS', 'Tasmania'], ['NT', 'Northern Territory'],
+		];
 
-            <!-- Application branding -->
-            <div class="brand">
+		function text(value) {
+			const clean = String(value ?? '').trim();
+			return clean || 'Not recorded';
+		}
 
-                <div class="brand-mark" aria-hidden="true">
-                    IAF
-                </div>
+		async function requestJson(url, options = {}) {
+			const response = await fetch(url, options);
+			const payload = await response.json();
+			if (!response.ok) {
+				const error = new Error(payload.error || 'The request could not be completed.');
+				error.status = response.status;
+				throw error;
+			}
+			return payload;
+		}
 
-                <div>
-                    <div class="brand-name">
-                        Indigenous Art Finder
-                    </div>
+		function setRegistrationMode(enabled) {
+			const loginButton = document.querySelector('[data-action="login"]');
+			const showRegisterButton = document.querySelector('#show-register-button');
+			const registerButton = document.querySelector('#register-submit-button');
+			const cancelRegisterButton = document.querySelector('#cancel-register-button');
+			const recoveryEmailField = document.querySelector('#recovery-email-field');
+			const forgotPasswordButton = document.querySelector('#forgot-password-button');
+			if (loginButton) loginButton.hidden = enabled;
+			if (showRegisterButton) showRegisterButton.hidden = enabled;
+			if (registerButton) registerButton.hidden = !enabled;
+			if (cancelRegisterButton) cancelRegisterButton.hidden = !enabled;
+			if (recoveryEmailField) recoveryEmailField.hidden = !enabled && !loginFailed;
+			if (forgotPasswordButton) forgotPasswordButton.hidden = !loginFailed;
+		}
 
-                    <div class="brand-subtitle">
-                        Australia
-                    </div>
-                </div>
+		function renderAccount(user) {
+			currentUsername = user?.username ?? null;
+			const authForm = document.querySelector('#auth-form');
+			const accountPanel = document.querySelector('#account-panel');
+			const accountName = document.querySelector('#account-name');
+			if (authForm) authForm.hidden = Boolean(currentUsername);
+			if (accountPanel) accountPanel.hidden = !currentUsername;
+			if (accountName) accountName.textContent = currentUsername ? `Signed in as ${currentUsername}` : '';
+			if (currentUsername) {
+				loginFailed = false;
+				setRegistrationMode(false);
+			}
+			const savedPlacesFilter = document.querySelector('#saved-places-filter');
+			if (savedPlacesFilter) savedPlacesFilter.disabled = !currentUsername;
+			if (!currentUsername) {
+				savedPlaceNames.clear();
+				showingSavedPlaces = false;
+				if (savedPlacesFilter) {
+					savedPlacesFilter.setAttribute('aria-pressed', 'false');
+					renderPlaceList(document.querySelector('#places-search').value);
+				}
+			}
+		}
 
-            </div>
+		async function loadSavedPlaces() {
+			const saved = await requestJson('/api/myplaces');
+			savedPlaceNames = new Set(saved.map((place) => place.name.toLocaleLowerCase()));
+			renderPlaceList(document.querySelector('#places-search').value);
+			const currentPlace = places.find((place) => place.name === document.querySelector('#place-detail').dataset.name);
+			if (currentPlace) showPlace(currentPlace);
+		}
 
+		async function authenticate(action) {
+			const form = document.querySelector('#auth-form');
+			const message = document.querySelector('#auth-message');
+			message.textContent = '';
+			try {
+				const user = await requestJson(`/api/${action}`, {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({
+						username: form.elements.username.value,
+						password: form.elements.password.value,
+						...(action === 'register' ? { recovery_email: form.elements.recovery_email.value } : {}),
+					}),
+				});
+				form.elements.password.value = '';
+				renderAccount(user);
+				if (placesSearch) await loadSavedPlaces();
+				message.textContent = `Signed in as ${user.username}.`;
+			} catch (error) {
+				if (action === 'login' && error.status === 401) {
+					loginFailed = true;
+					document.querySelector('#recovery-email-field').hidden = false;
+					document.querySelector('#forgot-password-button').hidden = false;
+				}
+				message.textContent = error.message;
+			}
+		}
 
-            <!-- Short description of the application -->
-            <div class="masthead-note">
-                Explore art centres and browse artworks
-            </div>
+		async function requestPasswordReset() {
+			const form = document.querySelector('#auth-form');
+			const message = document.querySelector('#auth-message');
+			message.textContent = '';
+			try {
+				const result = await requestJson('/api/forgot-password', {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({ email: form.elements.recovery_email.value }),
+				});
+				message.textContent = result.message;
+			} catch (error) {
+				message.textContent = error.message;
+			}
+		}
 
+		async function resetPassword(token) {
+			const form = document.querySelector('#reset-form');
+			const message = document.querySelector('#auth-message');
+			message.textContent = '';
+			try {
+				const result = await requestJson('/api/reset-password', {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({ token, password: form.elements.password.value }),
+				});
+				form.hidden = true;
+				document.querySelector('#auth-form').hidden = false;
+				form.elements.password.value = '';
+				const url = new URL(window.location.href);
+				url.searchParams.delete('reset_token');
+				window.history.replaceState({}, '', url);
+				message.textContent = result.message;
+			} catch (error) {
+				message.textContent = error.message;
+			}
+		}
 
-            <!-- Account navigation -->
-            <nav class="header-actions" aria-label="Account">
+		function field(label, value, wide = false) {
+			const wrapper = document.createElement('div');
+			if (wide) wrapper.className = 'field-wide';
+			const heading = document.createElement('span');
+			heading.className = 'field-label';
+			heading.textContent = label;
+			const content = document.createElement('span');
+			content.className = 'field-value';
+			content.textContent = text(value);
+			wrapper.append(heading, content);
+			return wrapper;
+		}
 
-                <a
-                    class="header-link secondary"
-                    href="{{ url_for('login_page') }}"
-                >
-                    Log in
-                </a>
+		function renderWorkList(query = '') {
+			const normalized = query.trim().toLocaleLowerCase();
+			const matches = works.filter((work) => Object.values(work).join(' ').toLocaleLowerCase().includes(normalized));
+			const list = document.querySelector('#works-list');
+			list.replaceChildren();
+			document.querySelector('#works-count').textContent = `${matches.length} / ${works.length}`;
+			if (!matches.length) {
+				list.innerHTML = '<div class="empty-state">No works match that search.</div>';
+				return;
+			}
+			matches.forEach((work) => {
+				const button = document.createElement('button');
+				button.type = 'button';
+				button.className = 'record-button';
+				button.setAttribute('aria-current', String(document.querySelector('#work-detail').dataset.title === work.title));
+				const title = document.createElement('span');
+				title.className = 'record-title';
+				title.textContent = text(work.title);
+				const author = document.createElement('span');
+				author.className = 'record-subtitle';
+				author.textContent = text(work.author);
+				const type = document.createElement('span');
+				type.className = 'record-tag';
+				type.textContent = text(work.type);
+				button.append(title, author, type);
+				button.addEventListener('click', () => showWork(work));
+				list.append(button);
+			});
+		}
 
-                <a
-                    class="header-link"
-                    href="{{ url_for('registration_page') }}"
-                >
-                    Register
-                </a>
+		function showWork(work) {
+			const detail = document.querySelector('#work-detail');
+			detail.dataset.title = work.title;
+			detail.replaceChildren();
+			const kicker = document.createElement('div');
+			kicker.className = 'detail-kicker';
+			kicker.textContent = text(work.type);
+			const title = document.createElement('h3');
+			title.textContent = text(work.title);
+			const byline = document.createElement('p');
+			byline.className = 'detail-byline';
+			byline.textContent = text(work.author);
+			const rule = document.createElement('div');
+			rule.className = 'detail-rule';
+			const grid = document.createElement('div');
+			grid.className = 'detail-grid';
+			grid.append(
+				field('Type of work', work.type),
+				field('Aboriginal heritage', work.heritage),
+				field('Work medium', work.medium),
+				field('Aboriginal group location', work.groupLocationAndState),
+				field('Date created', work.dateCreated),
+				field('Collection', work.collection, true),
+				field('Where the work is housed', work.housedAt, true),
+				field('Information sourced from', work.source, true),
+			);
+			detail.append(kicker, title, byline, rule, grid);
+			renderWorkList(document.querySelector('#works-search').value);
+		}
 
-            </nav>
+		function renderPlaceList(query = '') {
+			const normalized = query.trim().toLocaleLowerCase();
+			const matches = places.filter((place) => (selectedPlaceState === 'ALL' || place.state === selectedPlaceState)
+				&& (!showingSavedPlaces || savedPlaceNames.has(place.name.toLocaleLowerCase()))
+				&& Object.values(place).join(' ').toLocaleLowerCase().includes(normalized));
+			const list = document.querySelector('#places-list');
+			list.replaceChildren();
+			document.querySelector('#places-count').textContent = `${matches.length} / ${showingSavedPlaces ? savedPlaceNames.size : places.length}`;
+			if (!matches.length) {
+				list.textContent = showingSavedPlaces && savedPlaceNames.size === 0
+					? 'You have not saved any places yet.'
+					: 'No places match that search.';
+				list.className = 'record-list empty-state';
+				return;
+			}
+			list.className = 'record-list';
+			matches.forEach((place) => {
+				const button = document.createElement('button');
+				button.type = 'button';
+				button.className = 'record-button';
+				button.setAttribute('aria-current', String(document.querySelector('#place-detail').dataset.name === place.name));
+				const name = document.createElement('span');
+				name.className = 'record-title';
+				name.textContent = text(place.name);
+				const location = document.createElement('span');
+				location.className = 'record-subtitle';
+				location.textContent = [place.state, place.address].filter((value) => value).join(' · ') || 'Location not recorded';
+				const category = document.createElement('span');
+				category.className = 'record-tag';
+				category.textContent = text(place.category);
+				button.append(name, location, category);
+				button.addEventListener('click', () => showPlace(place));
+				list.append(button);
+			});
+		}
 
-        </header>
+		function renderRegionFilters() {
+			const filters = document.querySelector('#region-filters');
+			filters.replaceChildren();
+			[['ALL', 'Nationwide'], ...regions].forEach(([code, label]) => {
+				const button = document.createElement('button');
+				button.type = 'button';
+				button.className = 'region-button';
+				button.textContent = label;
+				button.setAttribute('aria-pressed', String(selectedPlaceState === code));
+				button.addEventListener('click', () => {
+					selectedPlaceState = code;
+					renderRegionFilters();
+					renderPlaceList(document.querySelector('#places-search').value);
+				});
+				filters.append(button);
+			});
+		}
 
+		function showPlace(place) {
+			const detail = document.querySelector('#place-detail');
+			detail.dataset.name = place.name;
+			detail.replaceChildren();
+			const kicker = document.createElement('div');
+			kicker.className = 'detail-kicker';
+			kicker.textContent = text(place.category);
+			const title = document.createElement('h3');
+			title.textContent = text(place.name);
+			const byline = document.createElement('p');
+			byline.className = 'detail-byline';
+			byline.textContent = [place.state, place.address].filter((value) => value).join(' · ') || 'Address not recorded';
+			const saveButton = document.createElement('button');
+			saveButton.type = 'button';
+			saveButton.className = 'place-action';
+			const isSaved = savedPlaceNames.has(place.name.toLocaleLowerCase());
+			saveButton.textContent = currentUsername ? (isSaved ? 'Remove from my list' : 'Save to my list') : 'Log in to save places';
+			saveButton.disabled = !currentUsername;
+			if (isSaved) saveButton.classList.add('secondary');
+			saveButton.addEventListener('click', async () => {
+				try {
+					const saved = await requestJson('/api/myplaces', {
+						method: isSaved ? 'DELETE' : 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({ name: place.name }),
+					});
+					savedPlaceNames = new Set(saved.map((savedPlace) => savedPlace.name.toLocaleLowerCase()));
+					document.querySelector('#app-status').textContent = isSaved
+						? `${place.name} removed from your list.`
+						: `${place.name} saved to your list.`;
+					showPlace(place);
+					renderPlaceList(document.querySelector('#places-search').value);
+				} catch (error) {
+					document.querySelector('#app-status').textContent = error.message;
+				}
+			});
+			const flags = document.createElement('div');
+			flags.className = 'place-flags';
+			[place.exclusiveContent === 'Yes' && 'Aboriginal content', place.aboriginalOwned === 'Yes' && 'Aboriginal owned & governed'].filter(Boolean).forEach((label) => {
+				const flag = document.createElement('span');
+				flag.className = 'flag';
+				flag.textContent = label;
+				flags.append(flag);
+			});
+			const rule = document.createElement('div');
+			rule.className = 'detail-rule';
+			const grid = document.createElement('div');
+			grid.className = 'detail-grid';
+			grid.append(	// place - detailed information
+				field('Address', place.address, true),
+				field('Category', place.category),
+				field('Aboriginal group', place.aboriginalGroup),
+				field('Indigenous exclusive content', place.exclusiveContent),
+				field('Indigenous owned and run', place.aboriginalOwned),
+				field('Type of interaction', place.interactions),
+				field('Year founded', place.yearFounded),
+				field('Information Source', place.source, true),
+			);
+			if (place.associatedWith?.trim()) {
+   			 grid.append(field('Associated with', place.associatedWith, true));
+			}
 
-        <main>
+			if (place.website && /^https?:\/\//i.test(place.website)) {
+				const websiteField = document.createElement('div');
+				websiteField.className = 'field-wide';
+				const label = document.createElement('span');
+				label.className = 'field-label';
+				label.textContent = 'Website';
+				const link = document.createElement('a');
+				link.className = 'field-value';
+				link.href = place.website;
+				link.target = '_blank';
+				link.rel = 'noopener noreferrer';
+				link.textContent = place.website;
+				websiteField.append(label, link);
+				grid.append(websiteField);
+			} else {
+				grid.append(field('Website', place.website, true));
+			}
+			detail.append(kicker, title, byline, saveButton, flags, rule, grid);
+			renderPlaceList(document.querySelector('#places-search').value);
+		}
 
-            <!--
-                ====================================================
-                MAIN NAVIGATION
-                ====================================================
-                These links allow the user to move between the main
-                sections of Indigenous Art Finder.
-            -->
+		function renderBars(target, entries) {
+			const element = document.querySelector(target);
+			element.replaceChildren();
+			const maximum = Math.max(1, ...entries.map(([, count]) => count));
+			entries.forEach(([label, count]) => {
+				const row = document.createElement('div');
+				row.className = 'bar-row';
+				const name = document.createElement('span');
+				name.className = 'bar-label';
+				name.textContent = label;
+				name.title = label;
+				const track = document.createElement('div');
+				track.className = 'bar-track';
+				track.setAttribute('aria-label', `${label}: ${count}`);
+				const fill = document.createElement('div');
+				fill.className = 'bar-fill';
+				fill.style.width = count ? `${Math.max(3, count / maximum * 100)}%` : '0%';
+				track.append(fill);
+				const value = document.createElement('span');
+				value.className = 'bar-count';
+				value.textContent = count;
+				row.append(name, track, value);
+				element.append(row);
+			});
+		}
 
-            <nav class="tabs" aria-label="Catalogue sections">
+		function renderFoundedChart(entries) {
+			const container = document.querySelector('#founded-chart');
+			container.replaceChildren();
+			if (!entries.length) {
+				const empty = document.createElement('div');
+				empty.className = 'empty-state';
+				empty.textContent = 'No founding years are recorded in the source CSV yet.';
+				container.append(empty);
+				return;
+			}
+			const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+			svg.setAttribute('viewBox', '0 0 720 250');
+			svg.setAttribute('role', 'img');
+			svg.setAttribute('aria-label', 'Cumulative number of places by founding year');
+			svg.classList.add('line-chart');
+			const maximum = Math.max(1, ...entries.map((entry) => entry.total));
+			const left = 54;
+			const right = 698;
+			const top = 24;
+			const bottom = 204;
+			const axis = document.createElementNS(svg.namespaceURI, 'path');
+			axis.setAttribute('d', `M${left} ${top}V${bottom}H${right}`);
+			axis.classList.add('chart-axis');
+			svg.append(axis);
+			const points = entries.map((entry, index) => {
+				const x = entries.length === 1 ? (left + right) / 2 : left + index / (entries.length - 1) * (right - left);
+				const y = bottom - entry.total / maximum * (bottom - top);
+				return { ...entry, x, y };
+			});
+			const line = document.createElementNS(svg.namespaceURI, 'polyline');
+			line.setAttribute('points', points.map(({ x, y }) => `${x},${y}`).join(' '));
+			line.classList.add('chart-line');
+			svg.append(line);
+			points.forEach((point, index) => {
+				const dot = document.createElementNS(svg.namespaceURI, 'circle');
+				dot.setAttribute('cx', point.x);
+				dot.setAttribute('cy', point.y);
+				dot.setAttribute('r', '5');
+				dot.classList.add('chart-point');
+				const title = document.createElementNS(svg.namespaceURI, 'title');
+				title.textContent = `${point.year}: ${point.total} places total (${point.count} founded)`;
+				dot.append(title);
+				svg.append(dot);
+				if (index === 0 || index === points.length - 1 || index === Math.floor(points.length / 2)) {
+					const label = document.createElementNS(svg.namespaceURI, 'text');
+					label.setAttribute('x', point.x);
+					label.setAttribute('y', '228');
+					label.setAttribute('text-anchor', 'middle');
+					label.classList.add('chart-label');
+					label.textContent = point.year;
+					svg.append(label);
+				}
+			});
+			container.append(svg);
+		}
 
-                <a
-                    class="tab"
-                    href="{{ url_for('works_page') }}"
-                    {% if active_page == 'works' %}
-                        aria-current="page"
-                    {% endif %}
-                >
-                    Works
-                </a>
+		function renderOverview(data) {
+			const metrics = document.querySelector('#metrics');
+			metrics.replaceChildren();
+			const statesWithPlaces = Object.values(data.placesByState).filter((count) => count > 0).length;
+			[['Art centres & places', data.placeCount], ['First Art Centre Founded', data.FirstArtCentreFounded ?? '—'], ['States represented', statesWithPlaces]].forEach(([label, value]) => {
+				const item = document.createElement('div');
+				item.className = 'metric';
+				const number = document.createElement('span');
+				number.className = 'metric-value';
+				number.textContent = value;
+				const caption = document.createElement('span');
+				caption.className = 'metric-label';
+				caption.textContent = label;
+				item.append(number, caption);
+				metrics.append(item);
+			});
+			renderBars('#state-chart', Object.entries(data.placesByState));
+			renderFoundedChart(data.foundedTimeline);
+			const timeline = document.querySelector('#timeline');
+			timeline.replaceChildren();
+			data.foundedTimeline.forEach((entry) => {
+				const item = document.createElement('div');
+				item.className = 'timeline-item';
+				const year = document.createElement('span');
+				year.className = 'timeline-year';
+				year.textContent = entry.year;
+				const count = document.createElement('span');
+				count.className = 'timeline-count';
+				count.textContent = `${entry.count} founded · ${entry.total} total`;
+				item.append(year, count);
+				timeline.append(item);
+			});
+			document.querySelector('#archive-note').textContent = data.unrecordedFoundedCount
+				? `${data.unrecordedFoundedCount} places have no recognizable founding year in the source CSV and are not plotted.`
+				: 'Founding totals are cumulative; yearly additions are shown in the graph. \nNote: Institutions that have shutdown or are not in our dataset are not included';
+		}
 
+		const worksSearch = document.querySelector('#works-search');
+		if (worksSearch) worksSearch.addEventListener('input', (event) => renderWorkList(event.target.value));
+		const placesSearch = document.querySelector('#places-search');
+		if (placesSearch) placesSearch.addEventListener('input', (event) => renderPlaceList(event.target.value));
+		const savedPlacesFilter = document.querySelector('#saved-places-filter');
+		if (savedPlacesFilter) savedPlacesFilter.addEventListener('click', (event) => {
+			showingSavedPlaces = !showingSavedPlaces;
+			event.currentTarget.setAttribute('aria-pressed', String(showingSavedPlaces));
+			renderPlaceList(document.querySelector('#places-search').value);
+		});
+		const authForm = document.querySelector('#auth-form');
+		if (authForm) {
+			authForm.addEventListener('submit', (event) => {
+				event.preventDefault();
+				authenticate(event.submitter?.dataset.action === 'register' ? 'register' : 'login');
+			});
+		}
+		const showRegisterButton = document.querySelector('#show-register-button');
+		if (showRegisterButton) showRegisterButton.addEventListener('click', () => {
+			loginFailed = false;
+			setRegistrationMode(true);
+			document.querySelector('#auth-message').textContent = '';
+		});
+		const cancelRegisterButton = document.querySelector('#cancel-register-button');
+		if (cancelRegisterButton) cancelRegisterButton.addEventListener('click', () => {
+			setRegistrationMode(false);
+			document.querySelector('#auth-message').textContent = '';
+		});
+		const forgotPasswordButton = document.querySelector('#forgot-password-button');
+		if (forgotPasswordButton) forgotPasswordButton.addEventListener('click', requestPasswordReset);
+		const resetToken = new URLSearchParams(window.location.search).get('reset_token');
+		const resetForm = document.querySelector('#reset-form');
+		if (resetToken && authForm && resetForm) {
+			authForm.hidden = true;
+			resetForm.hidden = false;
+		}
+		if (resetForm) resetForm.addEventListener('submit', (event) => {
+			event.preventDefault();
+			resetPassword(resetToken);
+		});
+		const logoutButton = document.querySelector('#logout-button');
+		if (logoutButton) logoutButton.addEventListener('click', async () => {
+			try {
+				await requestJson('/api/logout', { method: 'POST' });
+				renderAccount(null);
+				document.querySelector('#auth-message').textContent = 'You have logged out.';
+			} catch (error) {
+				document.querySelector('#auth-message').textContent = error.message;
+			}
+		});
+		const myLists = document.querySelector('#my-lists');
+		if (myLists) {
+			myLists.querySelectorAll('[data-remove-place]').forEach((button) => {
+				button.addEventListener('click', async () => {
+					const item = button.closest('[data-place-name]');
+					const placeName = item.dataset.placeName;
+					const message = document.querySelector('#my-lists-message');
+					try {
+						const savedPlaces = await requestJson('/api/myplaces', {
+							method: 'DELETE',
+							headers: { 'Content-Type': 'application/json' },
+							body: JSON.stringify({ name: placeName }),
+						});
+						item.remove();
+						document.querySelector('#my-lists-count').textContent = `${savedPlaces.length} saved places`;
+						document.querySelector('#my-lists-empty').hidden = savedPlaces.length > 0;
+						message.textContent = `${placeName} removed from your list.`;
+					} catch (error) {
+						message.textContent = error.message;
+					}
+				});
+			});
+		}
 
-                <a
-                    class="tab"
-                    href="{{ url_for('places_page') }}"
-                    {% if active_page == 'places' %}
-                        aria-current="page"
-                    {% endif %}
-                >
-                    Places
-                </a>
+		async function loadCatalogue() {
+			try {
+				if (worksSearch) {
+					const response = await fetch('/api/works');
+					if (!response.ok) throw new Error('The works catalogue could not be loaded.');
+					works = await response.json();
+					document.querySelector('#works-summary').textContent = `Explore ${works.length} works`;
+					renderWorkList();
+				}
+				if (placesSearch) {
+					const response = await fetch('/api/places');
+					if (!response.ok) throw new Error('The places catalogue could not be loaded.');
+					places = await response.json();
+					document.querySelector('#places-summary').textContent = `Explore ${places.length} cultural places`;
+					renderRegionFilters();
+					renderPlaceList();
+				}
+				if (document.querySelector('#metrics')) {
+					const response = await fetch('/api/overview');
+					if (!response.ok) throw new Error('The catalogue overview could not be loaded.');
+					renderOverview(await response.json());
+				}
+			} catch (error) {
+				status.textContent = `${error.message} Start the application with python main.py.`;
+			}
+		}
 
+		async function loadAccount() {
+			try {
+				const user = await requestJson('/api/session');
+				renderAccount(user.authenticated ? user : null);
+				if (user.authenticated && placesSearch) await loadSavedPlaces();
+			} catch (error) {
+				const authMessage = document.querySelector('#auth-message');
+				if (authMessage) authMessage.textContent = error.message;
+			}
+		}
 
-                <a
-                    class="tab"
-                    href="{{ url_for('archive_page') }}"
-                    {% if active_page == 'archive' %}
-                        aria-current="page"
-                    {% endif %}
-                >
-                    Development of Art Centres
-                </a>
-
-
-                <a
-                    class="tab"
-                    href="{{ url_for('mylists_page') }}"
-                    {% if active_page == 'mylists' %}
-                        aria-current="page"
-                    {% endif %}
-                >
-                    My Lists
-                </a>
-
-            </nav>
-
-
-            <!--
-                ====================================================
-                PAGE CONTENT
-                ====================================================
-                Child Flask/Jinja templates insert their individual
-                page content into this block.
-            -->
-
-            {% block page_content %}
-            {% endblock %}
-
-
-            <!--
-                General status message area.
-                JavaScript can use this to tell the user when something
-                has happened, such as a place being saved or removed.
-            -->
-
-            <p
-                class="status"
-                id="app-status"
-                role="status"
-            ></p>
-
-        </main>
-
-
-        <!--
-            ========================================================
-            FOOTER
-            ========================================================
-            The archive page receives an additional note explaining
-            the limitations of the historical data.
-        -->
-
-        <footer
-            class="{% if active_page == 'archive' %}archive-footer{% endif %}"
-        >
-
-            {% if active_page == 'archive' %}
-
-                <span>
-                    These graphs are based on data sourced via each
-                    institute's website, affiliated organisations,
-                    and/or articles about the institution. Please keep
-                    in mind that these graphs may contain inaccuracies
-                    due to the informal nature of organisation
-                    formation and/or poor records.
-                </span>
-
-            {% endif %}
-
-            <span>
-                Indigenous Art Finder, 2026
-            </span>
-
-        </footer>
-
-    </div>
-
-
-    <!--
-        ============================================================
-        WELCOME MESSAGE
-        ============================================================
-        This dialog appears the first time the user opens the app.
-        JavaScript remembers that the message has already been shown.
-    -->
-
-    <dialog
-        class="welcome-dialog"
-        id="welcome-dialog"
-        aria-labelledby="welcome-title"
-    >
-
-        <h2 id="welcome-title">
-            Welcome to Indigenous Art Finder Australia
-        </h2>
-
-        <p>
-            We acknowledge the traditional owners of the lands and
-            seas this site explores. We pay our respects to Elders
-            past and present, and give our thanks to all Aboriginal
-            and Torres Strait Islander peoples.
-        </p>
-
-        <p>
-            Please be warned that this site may contain names of
-            Aboriginal and Torres Strait Islander peoples who have
-            passed away.
-        </p>
-
-        <form method="dialog">
-            <button autofocus>
-                Continue to the homepage
-            </button>
-        </form>
-
-    </dialog>
-
-
-    <!-- Main JavaScript file -->
-    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
-
+		loadCatalogue();
+		loadAccount();
+	</script>
 </body>
 </html>
