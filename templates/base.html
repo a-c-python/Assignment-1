@@ -6,7 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">          <!-- ensures webpage layout scales to screen size to remain readable on different devices -->
     <meta name="theme-color" content="#f4f2e9">                                     <!-- Makes the app look pretty by shifting the colour of the mobile browsers -->
 
-    <title>{% block title %} Indigenous Art Finder | Australia{% endblock %}</title>
+	<!-- Sets the webpage title shown in the browser tab -->
+	<title>{% block title %} Indigenous Art Finder | Australia{% endblock %}</title>
     <!-- Pre-connects to server which makes load time faster -->
     <link rel="preconnect" href="https://fonts.googleapis.com"> 			        <!-- Font style sheet -->			
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> 	        <!-- Font file -->
@@ -17,6 +18,7 @@
     <!-- CSS -->
     <link rel="stylesheet" href="style.css">
 
+	<!-- CSS rules that control the appearance and layout of the webpage -->
 	<style>
 		:root {						/* colour scheme and font family variables for the document */
 			color-scheme: light;
@@ -107,12 +109,12 @@
 		.auth-message { margin: 0; color: var(--muted); font-size: 11px; }
 		.place-action { margin-top: 18px; }
 		.place-action:disabled { cursor: not-allowed; opacity: .7; }
-		.intro { padding: 31px 0 23px; display: flex; align-items: end; justify-content: space-between; gap: 24px; }
+		.intro { padding: 31px 0 23px; display: flex; align-items: end; justify-content: space-between; gap: 24px; }           /* Styles the introductory heading and description at the top of each page. */
 		.eyebrow { color: var(--ochre); font-size: 11px; font-weight: 700; letter-spacing: .13em; text-transform: uppercase; }
 		h1 { margin: 8px 0 0; font: 500 37px/1.05 var(--serif); }
 		.intro-copy { max-width: 345px; margin: 0; color: var(--muted); line-height: 1.55; }
-		.tabs { display: flex; border-bottom: 1px solid var(--line); gap: 4px; }
-		.my-lists { display: grid; gap: 8px; max-width: 760px; margin: 18px 0; padding: 0; list-style: none; }
+		.tabs { display: flex; border-bottom: 1px solid var(--line); gap: 4px; } /*Arranges the navigation tabs in a horizontal row */
+		.sy-lists { display: grid; gap: 8px; max-width: 760px; margin: 18px 0; padding: 0; list-style: none; }
 		.my-list-item { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 14px 16px; border: 1px solid var(--line); background: var(--surface); }
 		.mylists-login {width: 70px;}
 		.mylists-register {width: 70px;}
@@ -141,7 +143,7 @@
 		.section-head { display: flex; align-items: end; justify-content: space-between; gap: 18px; margin-bottom: 15px; }
 		h2 { margin: 0; font: 500 25px/1.1 var(--serif); }
 		.section-meta { color: var(--muted); font-size: 12px; }
-		.workspace { display: grid; grid-template-columns: minmax(270px, .82fr) minmax(0, 1.55fr); min-height: 510px; border: 1px solid var(--line); background: var(--surface); }
+		.workspace { display: grid; grid-template-columns: minmax(270px, .82fr) minmax(0, 1.55fr); min-height: 510px; border: 1px solid var(--line); background: var(--surface); } /*Creates a two column layour for the record list and selected record detail */
 		.browse-column { min-width: 0; border-right: 1px solid var(--line); }
 		.browse-toolbar { padding: 15px; border-bottom: 1px solid var(--line); }
 		.search-wrap { position: relative; }
@@ -192,7 +194,7 @@
 		.placeholder p { max-width: 260px; line-height: 1.6; }
 		.place-flags { display: flex; flex-wrap: wrap; gap: 7px; margin: 18px 0 0; }
 		.flag { padding: 5px 8px; border: 1px solid var(--line); color: var(--forest); font-size: 10px; font-weight: 600; }
-		.analytics-top { display: grid; grid-template-columns: repeat(3, 1fr); margin-bottom: 18px; border: 1px solid var(--line); background: var(--surface); }
+		.analytics-top { display: grid; grid-template-columns: repeat(3, 1fr); margin-bottom: 18px; border: 1px solid var(--line); background: var(--surface); }  /*Arranges the summary statistics above the charts */
 		.metric { padding: 17px 20px; border-right: 1px solid var(--line); }
 		.metric:last-child { border: 0; }
 		.metric-value { display: block; font: 500 29px/1 var(--serif); color: var(--forest); }
@@ -226,6 +228,7 @@
 		.welcome-dialog button:hover { background: #15392d; }
 		#archive-note {white-space: pre-line;}
 		footer { display: flex; justify-content: space-between; gap: 12px; margin-top: 22px; padding-top: 13px; border-top: 1px solid var(--line); color: var(--muted); font-size: 10px; flex-direction: column;}
+		/* Adjusts the layout for smaller screens such as phones and tablets. */
 		@media (max-width: 760px) {
 			.shell { padding: 0 18px 32px; }
 			.masthead { min-height: 81px; flex-wrap: wrap; }
@@ -258,6 +261,7 @@
 			.metric:last-child { grid-column: 1 / -1; border-top: 1px solid var(--line); }
 			footer { flex-direction: column; }
 		}
+		/*Adds a small transition when the user has not requested reduced motion. */
 		@media (prefers-reduced-motion: no-preference) {
 			.panel:not([hidden]) { animation: arrive 180ms ease-out both; }
 			@keyframes arrive { from { opacity: .5; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
@@ -293,6 +297,7 @@
 			<p class="status" id="app-status" role="status"></p>
 		</main>
 
+	<!-- Displays the footer and any additional notes specific to the current page. -->
 		<footer class="{% if active_page == 'archive' %}archive-footer{% endif %}">
 			{% if active_page == 'archive' %}
 				<span>This graphs are based on the data sourced via each institute's website, affiliated organisations, and/or articles about the institution. Please keep in mind that these graphs may contain inaccuracies due to the informal nature of organisations formation and/or poor records.</span>
@@ -301,6 +306,7 @@
 		</footer>
 	</div>
 
+	<!-- Creates the welcome message and acknowledgement shown when the site is first opened. -->
 	<dialog class="welcome-dialog" id="welcome-dialog" aria-labelledby="welcome-title">
 		<h2 id="welcome-title">Welcome to Indigenous Art Finder Australia</h2>
 		<p>We acknowledge the traditional owners of the lands and seas this site explores. We pay our respects to Elders past and present, and give our thanks to all Aboriginal and Torres Strait Islander peoples.</p>
@@ -311,6 +317,7 @@
 	</dialog>
 
 	<script>
+		// Finds the welcome dialog so it can be displayed when the page is first loads //
 		const welcomeDialog = document.querySelector('#welcome-dialog');
 		welcomeDialog.addEventListener('close', () => {
 			localStorage.setItem('opening message', 'true');
@@ -319,6 +326,7 @@
 			if (!localStorage.getItem('opening message')) welcomeDialog.showModal();
 		});
 		
+		//Stores the status message element and prepares variables used throughout the application //
 		const status = document.querySelector('#app-status');
 		let works = [];
 		let places = [];
@@ -327,16 +335,19 @@
 		let loginFailed = false;
 		let showingSavedPlaces = false;
 		let selectedPlaceState = 'ALL';
+		//Stores the Australian state and territor codes and their full names for the region filter //
 		const regions = [
 			['ACT', 'Australian Capital Territory'], ['NSW', 'New South Wales'], ['VIC', 'Victoria'], ['QLD', 'Queensland'],
 			['SA', 'South Australia'], ['WA', 'Western Australia'], ['TAS', 'Tasmania'], ['NT', 'Northern Territory'],
 		];
 
+		//converts a value to a trimmed string and displays a fallback when it is empty of missing. //
 		function text(value) {
 			const clean = String(value ?? '').trim();
 			return clean || 'Not recorded';
 		}
 
+		//Sends a request to the backend, converts the response to JSON and reports unseccessful requests as errors. //
 		async function requestJson(url, options = {}) {
 			const response = await fetch(url, options);
 			const payload = await response.json();
@@ -348,6 +359,7 @@
 			return payload;
 		}
 
+		//Shows or hides the login, registration and password recovery controls dlepending on the current state. //
 		function setRegistrationMode(enabled) {
 			const loginButton = document.querySelector('[data-action="login"]');
 			const showRegisterButton = document.querySelector('#show-register-button');
@@ -363,6 +375,7 @@
 			if (forgotPasswordButton) forgotPasswordButton.hidden = !loginFailed;
 		}
 
+		//Updates the account interface based on whether a user is signed in. //
 		function renderAccount(user) {
 			currentUsername = user?.username ?? null;
 			const authForm = document.querySelector('#auth-form');
@@ -387,6 +400,7 @@
 			}
 		}
 
+		//Retrieves the list of saved places from the backend and refreshes the displayed list and selected places. //
 		async function loadSavedPlaces() {
 			const saved = await requestJson('/api/myplaces');
 			savedPlaceNames = new Set(saved.map((place) => place.name.toLocaleLowerCase()));
@@ -395,6 +409,7 @@
 			if (currentPlace) showPlace(currentPlace);
 		}
 
+		//Submits login or registration details to the backend and updates the interface based on the result. //
 		async function authenticate(action) {
 			const form = document.querySelector('#auth-form');
 			const message = document.querySelector('#auth-message');
@@ -423,6 +438,7 @@
 			}
 		}
 
+		//Request a passwords reset using the recovery email entered in the account form. //
 		async function requestPasswordReset() {
 			const form = document.querySelector('#auth-form');
 			const message = document.querySelector('#auth-message');
@@ -439,6 +455,7 @@
 			}
 		}
 
+		// Sends the reset token and new password to the backend, then updates the page based on the response. //
 		async function resetPassword(token) {
 			const form = document.querySelector('#reset-form');
 			const message = document.querySelector('#auth-message');
@@ -461,6 +478,7 @@
 			}
 		}
 
+		// Creates a reusable field containing a label and its value for the record details panel. //
 		function field(label, value, wide = false) {
 			const wrapper = document.createElement('div');
 			if (wide) wrapper.className = 'field-wide';
@@ -474,8 +492,10 @@
 			return wrapper;
 		}
 
+		// Filters the artwork catalogue using the search text and rebuilds the list of matching artworks. //
 		function renderWorkList(query = '') {
 			const normalized = query.trim().toLocaleLowerCase();
+			//Checks all fields of each artwork to find records that contains the search text. // 
 			const matches = works.filter((work) => Object.values(work).join(' ').toLocaleLowerCase().includes(normalized));
 			const list = document.querySelector('#works-list');
 			list.replaceChildren();
@@ -504,6 +524,7 @@
 			});
 		}
 
+		// Displays the selected artwork's information and updates which artwork is marked as selected in the list. //
 		function showWork(work) {
 			const detail = document.querySelector('#work-detail');
 			detail.dataset.title = work.title;
@@ -534,8 +555,10 @@
 			renderWorkList(document.querySelector('#works-search').value);
 		}
 
+		// Filters places by search text, selected region and saved place status before displaying the results. //
 		function renderPlaceList(query = '') {
 			const normalized = query.trim().toLocaleLowerCase();
+			// Starts filterning the places using the slected region, saved place setting and search text. //
 			const matches = places.filter((place) => (selectedPlaceState === 'ALL' || place.state === selectedPlaceState)
 				&& (!showingSavedPlaces || savedPlaceNames.has(place.name.toLocaleLowerCase()))
 				&& Object.values(place).join(' ').toLocaleLowerCase().includes(normalized));
@@ -570,6 +593,7 @@
 			});
 		}
 
+		// Creates the state and territory filter buttons and updates the list when a different region is selected. //
 		function renderRegionFilters() {
 			const filters = document.querySelector('#region-filters');
 			filters.replaceChildren();
@@ -588,6 +612,7 @@
 			});
 		}
 
+		// Displays the selected places details, website, ownership information, and save controls. //
 		function showPlace(place) {
 			const detail = document.querySelector('#place-detail');
 			detail.dataset.name = place.name;
@@ -607,6 +632,7 @@
 			saveButton.textContent = currentUsername ? (isSaved ? 'Remove from my list' : 'Save to my list') : 'Log in to save places';
 			saveButton.disabled = !currentUsername;
 			if (isSaved) saveButton.classList.add('secondary');
+			//Saves or removes the selected place through the backend when the button is clicked. //
 			saveButton.addEventListener('click', async () => {
 				try {
 					const saved = await requestJson('/api/myplaces', {
@@ -671,9 +697,11 @@
 			renderPlaceList(document.querySelector('#places-search').value);
 		}
 
+		// Builds horizontal bar charts using the supplied labels and counts, scaling bars to the largest value. // 
 		function renderBars(target, entries) {
 			const element = document.querySelector(target);
 			element.replaceChildren();
+			//Finds the largest count so each bar can be scaled proportionally. //
 			const maximum = Math.max(1, ...entries.map(([, count]) => count));
 			entries.forEach(([label, count]) => {
 				const row = document.createElement('div');
@@ -697,6 +725,7 @@
 			});
 		}
 
+		// Renders a line chart showing the cumulative number of places founded over time. //
 		function renderFoundedChart(entries) {
 			const container = document.querySelector('#founded-chart');
 			container.replaceChildren();
@@ -753,6 +782,7 @@
 			container.append(svg);
 		}
 
+		// Renders the main overview section with key metrics and charts. //
 		function renderOverview(data) {
 			const metrics = document.querySelector('#metrics');
 			metrics.replaceChildren();
