@@ -39,3 +39,9 @@
 
 #09/10/2026, Chat GPT, AI was used to understand what information should be included in the project's README file, AI provided guidance on the README structure, including the project's overview, features, technologies, project structure, setup instructions, and data sources. 
     #Prompt: What information should be included in a README file for our Indigenous Art Finder project, and how should we organise it so that users can easily understand the purpose of the project, its features, technologies, file structure, setup instructions and data sources?
+
+#09/10/2026, VS Code, AI used to help with deployment
+    #Prompt: What steps do I need to take to deploy this app through pythonanywhere, ensuring it's function remains the same?
+
+#09/10/2026, VS Code, AI used to change popup message to once per session instead of once per browser, checked it worked
+    #Prompt: Can you change my popup message that opens once per browser so that it opens once per session? Explain the changes in the code

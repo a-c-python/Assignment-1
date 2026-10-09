@@ -319,10 +319,10 @@
 		// Finds the welcome dialog so it can be displayed when the page is first loads //
 		const welcomeDialog = document.querySelector('#welcome-dialog');
 		welcomeDialog.addEventListener('close', () => {
-			localStorage.setItem('opening message', 'true');
+			sessionStorage.setItem('opening message', 'true');
 		});
 		window.addEventListener('load', () => {
-			if (!localStorage.getItem('opening message')) welcomeDialog.showModal();
+			if (!sessionStorage.getItem('opening message')) welcomeDialog.showModal();
 		});
 		
 		//Stores the status message element and prepares variables used throughout the application //
