@@ -205,14 +205,13 @@
 		.bar-label { overflow: hidden; color: var(--muted); text-overflow: ellipsis; white-space: nowrap; }
 		.bar-track { height: 9px; background: #edf0e9; }
 		.bar-fill { height: 100%; min-width: 2px; background: var(--leaf); }
-		.bar-row:nth-child(3n + 2) .bar-fill { background: var(--ochre); }
-		.bar-row:nth-child(3n) .bar-fill { background: var(--gold); }
 		.bar-count { text-align: right; font-weight: 700; }
 		.line-chart { width: 100%; height: auto; display: block; overflow: visible; }
-		.chart-axis { stroke: var(--line); stroke-width: 1; fill:none, }
-		.chart-line { fill: none; stroke: var(--forest); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
-		.chart-point { fill: var(--ochre); stroke: var(--surface); stroke-width: 2; }
-		.chart-label { fill: var(--muted); font: 11px var(--sans); }
+		.chart-axis { fill: none; stroke: var(--line); stroke-width: 1; }
+		.chart-grid { stroke: var(--line); stroke-width: 1; opacity: .55; }
+		.chart-line { fill: none; stroke: var(--leaf); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+		.chart-label { fill: var(--muted); font: 10px var(--sans); }
+		.chart-axis-title { fill: var(--muted); font: 11px var(--sans); }
 		.timeline-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 8px; margin-top: 14px; }
 		.timeline-item { padding: 9px 10px; border-left: 2px solid var(--ochre); background: #f7f8f2; }
 		.timeline-year { display: block; color: var(--forest); font-size: 11px; font-weight: 700; }
@@ -295,7 +294,7 @@
 
 		<footer class="{% if active_page == 'archive' %}archive-footer{% endif %}">
 			{% if active_page == 'archive' %}
-				<span>This graphs are based on the data sourced via each institute's website, affiliated organisations, and/or articles about the institution. Please keep in mind that these graphs may contain inaccuracies due to the informal nature of organisations formation and/or poor records.</span>
+				<span>These graphs are based on the data sourced via each institute's website, affiliated organisations, and/or articles about the institution. Please keep in mind that these graphs may contain inaccuracies due to the informal nature of organisations formation and/or poor records.</span>
 			{% endif%}
 			<span>Indigenous Art Finder, 2026</span>
 		</footer>
@@ -708,48 +707,88 @@
 				return;
 			}
 			const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-			svg.setAttribute('viewBox', '0 0 720 250');
+			svg.setAttribute('viewBox', '0 0 720 300');
 			svg.setAttribute('role', 'img');
 			svg.setAttribute('aria-label', 'Cumulative number of places by founding year');
 			svg.classList.add('line-chart');
 			const maximum = Math.max(1, ...entries.map((entry) => entry.total));
-			const left = 54;
-			const right = 698;
-			const top = 24;
-			const bottom = 204;
+			const firstYear = entries[0].year;
+			const lastYear = entries[entries.length - 1].year;
+			const yearRange = Math.max(1, lastYear - firstYear);
+			const left = 66;
+			const right = 700;
+			const top = 28;
+			const bottom = 224;
+			const tickValues = [...new Set(
+				Array.from({ length: 5 }, (_, tick) => Math.round(maximum * tick / 4)),
+			)];
+			tickValues.forEach((value) => {
+				const y = bottom - value / maximum * (bottom - top);
+				const grid = document.createElementNS(svg.namespaceURI, 'path');
+				grid.setAttribute('d', `M${left} ${y}H${right}`);
+				grid.classList.add('chart-grid');
+				svg.append(grid);
+				const label = document.createElementNS(svg.namespaceURI, 'text');
+				label.setAttribute('x', left - 9);
+				label.setAttribute('y', y + 4);
+				label.setAttribute('text-anchor', 'end');
+				label.classList.add('chart-label');
+				label.textContent = value;
+				svg.append(label);
+			});
 			const axis = document.createElementNS(svg.namespaceURI, 'path');
 			axis.setAttribute('d', `M${left} ${top}V${bottom}H${right}`);
+			axis.setAttribute('fill', 'none');
 			axis.classList.add('chart-axis');
 			svg.append(axis);
+			const yAxisTitle = document.createElementNS(svg.namespaceURI, 'text');
+			yAxisTitle.setAttribute('x', '16');
+			yAxisTitle.setAttribute('y', (top + bottom) / 2);
+			yAxisTitle.setAttribute('text-anchor', 'middle');
+			yAxisTitle.setAttribute('transform', `rotate(-90 16 ${(top + bottom) / 2})`);
+			yAxisTitle.classList.add('chart-axis-title');
+			yAxisTitle.textContent = 'Number of places';
+			svg.append(yAxisTitle);
 			const points = entries.map((entry, index) => {
-				const x = entries.length === 1 ? (left + right) / 2 : left + index / (entries.length - 1) * (right - left);
+				const x = entries.length === 1 ? (left + right) / 2 : left + (entry.year - firstYear) / yearRange * (right - left);
 				const y = bottom - entry.total / maximum * (bottom - top);
 				return { ...entry, x, y };
 			});
 			const line = document.createElementNS(svg.namespaceURI, 'polyline');
 			line.setAttribute('points', points.map(({ x, y }) => `${x},${y}`).join(' '));
+			line.setAttribute('fill', 'none');
 			line.classList.add('chart-line');
+			const lineTitle = document.createElementNS(svg.namespaceURI, 'title');
+			lineTitle.textContent = `Cumulative places founded from ${firstYear} to ${lastYear}`;
+			line.append(lineTitle);
 			svg.append(line);
-			points.forEach((point, index) => {
-				const dot = document.createElementNS(svg.namespaceURI, 'circle');
-				dot.setAttribute('cx', point.x);
-				dot.setAttribute('cy', point.y);
-				dot.setAttribute('r', '5');
-				dot.classList.add('chart-point');
-				const title = document.createElementNS(svg.namespaceURI, 'title');
-				title.textContent = `${point.year}: ${point.total} places total (${point.count} founded)`;
-				dot.append(title);
-				svg.append(dot);
-				if (index === 0 || index === points.length - 1 || index === Math.floor(points.length / 2)) {
-					const label = document.createElementNS(svg.namespaceURI, 'text');
-					label.setAttribute('x', point.x);
-					label.setAttribute('y', '228');
-					label.setAttribute('text-anchor', 'middle');
-					label.classList.add('chart-label');
-					label.textContent = point.year;
-					svg.append(label);
-				}
+			const firstLabeledYear = Math.ceil(firstYear / 25) * 25;
+			const labeledYears = [firstYear];
+			for (let year = firstLabeledYear; year <= lastYear - 10; year += 25) {
+				if (year > firstYear) labeledYears.push(year);
+			}
+			if (labeledYears[labeledYears.length - 1] !== lastYear) labeledYears.push(lastYear);
+			labeledYears.forEach((year) => {
+				const x = left + (year - firstYear) / yearRange * (right - left);
+				const tick = document.createElementNS(svg.namespaceURI, 'path');
+				tick.setAttribute('d', `M${x} ${bottom}v5`);
+				tick.classList.add('chart-axis');
+				svg.append(tick);
+				const label = document.createElementNS(svg.namespaceURI, 'text');
+				label.setAttribute('x', x);
+				label.setAttribute('y', '246');
+				label.setAttribute('text-anchor', 'middle');
+				label.classList.add('chart-label');
+				label.textContent = year;
+				svg.append(label);
 			});
+			const xAxisTitle = document.createElementNS(svg.namespaceURI, 'text');
+			xAxisTitle.setAttribute('x', (left + right) / 2);
+			xAxisTitle.setAttribute('y', '278');
+			xAxisTitle.setAttribute('text-anchor', 'middle');
+			xAxisTitle.classList.add('chart-axis-title');
+			xAxisTitle.textContent = 'Year';
+			svg.append(xAxisTitle);
 			container.append(svg);
 		}
 
