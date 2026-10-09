@@ -25,7 +25,7 @@ app.config["SESSION_COOKIE_HTTPONLY"] = True
 app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
 app.config["SESSION_COOKIE_SECURE"] = os.environ.get("SESSION_COOKIE_SECURE", "true").lower() == "true"
 BASE_DIR = os.path.dirname(os.path.abspath(__file__)) # Tells app where to find its files
-REGION_CODES = ("NSW", "VIC", "QLD", "SA", "WA", "TAS", "NT") # Gives regional codes
+REGION_CODES = ("ACT", "NSW", "VIC", "QLD", "SA", "WA", "TAS", "NT") # Gives regional codes
 
 
 @contextmanager
@@ -201,7 +201,7 @@ def json_response(payload):
 # Reads the artworks csv file and converts it into a dictionary. The frontend will use the dictionary information in the artwork browser page.
 def get_works():
 	works = []
-	for row in read_csv_rows("Draft collection works.csv"):
+	for row in read_csv_rows("works.csv"):
 		date_created = row.get("Date made", "").strip()
 		year_match = re.search(r"(?:18|19|20)\d{2}", date_created)
 		works.append({												# Creates a dictionary for each row in the csv file
@@ -209,8 +209,7 @@ def get_works():
 			"author": row.get("Author", "").strip(),
 			"type": row.get("Type", "").strip(),
 			"heritage": row.get("Aboriginal group", "").strip(),
-			"groupLocation": row.get("Aboriginal Group location", "").strip(),
-			"groupLocationAndState": row.get("Aboriginal Group location and State", "").strip(),
+			"groupLocationAndState": row.get("Aboriginal Group location", "").strip(),
 			"state": row.get("State", "").strip(),
 			"medium": row.get("Medium", "").strip(),
 			"dateCreated": date_created,
@@ -224,18 +223,18 @@ def get_works():
 # Reads the places csv file and converts it into a dictionary. The frontend will use the dictionary information in the place browser page.
 def get_places():
 	places = []
-	for row in read_csv_rows("Draft places.csv"):
+	for row in read_csv_rows("places.csv"):
 		founded = row.get("Year Founded", "").strip()
 		year_match = re.search(r"(?:18|19|20)\d{2}", founded)   # Searches for a 4-digit year between 1800 and 2099 - used for visualisations
 		places.append({											# Creates a dictionary for each row in the csv file
-			"name": row.get("Location", "").strip(),			# .strip() removes any whitespace from the beginning and end of the string
+			"name": row.get("Place", "").strip(),			# .strip() removes any whitespace from the beginning and end of the string
 			"category": row.get("Category", "").strip(),
 			"interactions": row.get("Type of interaction: buy, view, learn, engage, all", "").strip(),
 			"aboriginalGroup": row.get("Aboriginal Group", "").strip(),
 			"exclusiveContent": row.get("Exclusively aboriginal content", "").strip(),
 			"aboriginalOwned": row.get("Aboriginal Owned and Governed", "").strip(),
 			"state": row.get("State", "").strip(),
-			"address": row.get("Location_2", "").strip(),
+			"address": row.get("Location", "").strip(),
 			"source": row.get("Source", "").strip(),
 			"associatedWith": row.get("Associated with", "").strip(),
 			"website": row.get("Site address", "").strip(),

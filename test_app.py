@@ -15,15 +15,15 @@ from werkzeug.serving import make_server
     [
         (
             "/api/works",
-            "Draft collection works.csv",
+            "works.csv",
             ["Title", "Author", "Type", "Date made"],
             "title",
             "Incomplete artwork",
         ),
         (
             "/api/places",
-            "Draft places.csv",
-            ["Location", "Category", "State"],
+            "places.csv",
+            ["Place", "Category", "State"],
             "name",
             "Incomplete place",
         ),
@@ -70,6 +70,7 @@ def test_overview_returns_stats_when_no_founding_years_are_recorded(monkeypatch)
         "placeCount": 2,
         "FirstArtCentreFounded": None,
         "placesByState": {
+            "ACT": 0,
             "NSW": 1,
             "VIC": 1,
             "QLD": 0,
@@ -204,7 +205,7 @@ def test_place_details_appear_when_clicked(page, app_url):
 
     page.goto(app_url) # Tells the test to go to the app's main page.
     dismiss_welcome_dialog(page)
-    page.get_by_role("link", name="Places").click()
+    page.get_by_role("link", name="Places", exact=True).click()
     page.get_by_role("button", name="Test Place").click() # Tells the test to click the button for the place named "Test Place".
     
     details = page.locator("#place-detail")
@@ -351,7 +352,7 @@ def test_filter_places_by_state(page, app_url):
 
     page.goto(app_url)
     dismiss_welcome_dialog(page)
-    page.get_by_role("link", name="Places").click()
+    page.get_by_role("link", name="Places", exact=True).click()
 
     place_names = page.locator("#places-list .record-title")
 
