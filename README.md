@@ -6,6 +6,9 @@ Indigenous Art Finder is a web application designed to help users explore Indige
 
 The project aims to make information about Indigenous art and cultural places easier to explore through a simple, accessible interface.
 
+## How to Run the Project
+Our project is a web-based app. It is accessible by going to the following link: https://cits1501ac.pythonanywhere.com/
+
 ## Features
 - **Collections:** Browse and explore Indigenous artworks.
 - **Places:** Discover places where Indigenous art can be viewed.
@@ -27,13 +30,6 @@ The project aims to make information about Indigenous art and cultural places ea
 - `requirements.txt` – Lists the Python packages required to run the application.
 - `requirementsfordevelopment.txt` – Lists additional packages required for development and testing.
 - `test_app.py` – Contains automated tests used to check that the application works as expected.
-
-## How to Run the Project
-1. Download or clone the project repository.
-2. Install the required Python dependencies listed in `requirements.txt`, if provided.
-3. Open a terminal in the project folder.
-4. Run the application using the appropriate Python file.
-5. Open the local URL displayed in the terminal in your web browser.
 
 ## Data Sources
 Information about Indigenous artworks, art centres and cultural places was collected from publicly available sources. Source links are included in the datasets where available to help users locate the original information. 
