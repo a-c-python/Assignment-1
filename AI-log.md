@@ -1,7 +1,7 @@
 #AI log, entry format: date, AI type used, prompt/purpose, modifications
     #prompt (if more detail is required)
 
-#30/09/2026, VS Code chat, used AI to write code and explain said code for the app.py and index.html files (frontend and backend). Changed the modules the AI gave, using as working skeleton. Further changes to be made. 
+#30/09/2026, VS Code chat, used AI to write code and explain said code for the app.py and index.html files (frontend and backend). Changed the modules the AI gave, used as working skeleton. Edited the code where needed, tried to shorten where possible.  
     #Prompt: "using csv, jsonify, and os, write code that will have three sections; one for browsing and searching a collection by name, one for searching and browsing a list of locations, and one that will show graphs and a timeline. The section for browsing and searching a collection needs to read the csv file draft collection works.csv and show a list of works by title and author. Each title should be clickable to learn more about the work. When you click a work title the work should display the following information: work title, author, type of work, aboriginal heritage, aboriginal group location, work medium, date created, collection it belongs to, and where the work is housed. The second section for browsing and searching a list of locations should use the csv file draft places.csv. The page should show 8 buttons, one for each state and a view all. When these are clicked it should lead to a list of places in that state, which should be listed by name and address. Each place should be clickable and will show the following information when clicked; name, address, indigenous exclusive content, indigenous owned or run, and sourced by. The third section should be titled 'Art Centres over time', and should show a line graph for how many indigenous art centres have developed over time taken from the 'year founded' column in draft places.csv, and a bar graph that shows how many places are indigenous owned and run vs not, taken from the column"
 
 #30/09/2026, VS Code chat, used AI to reorganise and combine column information for display purposes in cvs file draft places.csv. 
@@ -25,8 +25,11 @@
 #07/10/2026, VS Code, used AI to restructure my code so that each page has its own html file, instead of sharing one file, checked the code, added pages and app routes for better app formatting
     #Prompt: Can you split-up the template's index.html file into a html file for each 'tab', and ensure that the test and app functions align with this new formatting? Please explain any changes to app.py that you make for this
 
-#08.10.2026, Chat GPT, Used AI to reorganise and cleanup existing code structure without changing the functionality. The code was separated into HTML, CSS, and JavaScript files to make the project easier to understand and maintain, 
+#08/10/2026, VS Code, used AI to edit my (alert) popup message so that instead of being an 'alert' before the page loaded, it became an overlay when the page loaded. 
+    #Prompt: How do I change the alert so it appears in front of the homepage and not before the page loads?
+
+#08/10/2026, Chat GPT, Used AI to reorganise and cleanup existing code structure without changing the functionality. The code was separated into HTML, CSS, and JavaScript files to make the project easier to understand and maintain, 
     #Prompt; Can you help me organise this code by separating the HTML, CSS, and JavaScript into three separate files? Please keep the code and functionality as close to the original as possible, and add comments explaining what each section does. Do not make any major design or functionality changes.
 
-#08.1 0.2026, Chat GPT, AI provided steps on preparing our app and deploying it to Render, including some slight code changes. I updated the required deployment settings and prepared the app for deployment without changing its existing functionality. 
+#08/10/2026, Chat GPT, AI provided steps on preparing our app and deploying it to Render, including some slight code changes. I updated the required deployment settings and prepared the app for deployment without changing its existing functionality. 
     #Prompt: Can you give me step by step instructions for deploying my app from GitHub to Render? Include what I need to check or change in my code, requirements file, GitHub repository, and Render settings before deploying, while keeping the existing functionality of the app the same.
