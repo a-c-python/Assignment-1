@@ -33,3 +33,6 @@
 
 #08/10/2026, Chat GPT, AI provided steps on preparing our app and deploying it to Render, including some slight code changes. I updated the required deployment settings and prepared the app for deployment without changing its existing functionality. 
     #Prompt: Can you give me step by step instructions for deploying my app from GitHub to Render? Include what I need to check or change in my code, requirements file, GitHub repository, and Render settings before deploying, while keeping the existing functionality of the app the same.
+
+#09/10/2026, VS Code, AI used to fix error in data visualisation, checked and edited changes 
+    #Prompt: Can you help me fix the black triangle that appears under the line chart, and explain why it's happening? Also please explain how to add x and y axis subtitles

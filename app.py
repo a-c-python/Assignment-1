@@ -16,7 +16,7 @@ from urllib.parse import quote, urlsplit
 from flask import Flask, jsonify, render_template, request, session
 from werkzeug.security import check_password_hash, generate_password_hash
 
-app = Flask("__name__")	# Creates app
+app = Flask(__name__)	# Creates app
 app.config["DATABASE"] = os.environ.get(
 	"DATABASE_PATH",
 	os.path.join(os.path.dirname(os.path.abspath(__file__)), "data", "app.sqlite3"),

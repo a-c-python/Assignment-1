@@ -1,4 +1,4 @@
-Place,Year Founded,Aboriginal Group,Category,"Type of interaction: buy, view, learn, engage, all",Exclusively aboriginal content,Aboriginal Owned and Governed,State,Location,Site address,Source,Associated with
+﻿Place,Year Founded,Aboriginal Group,Category,"Type of interaction: buy, view, learn, engage, all",Exclusively aboriginal content,Aboriginal Owned and Governed,State,Location,Site address,Source,Associated with
 Museum of Contempory Art,1991,Various,Museum,"view, learn",No,No,ACT,"140 George St, The Rocks NSW 2000",https://www.mca.com.au/,,
 National Gallery of Australia,1982,Various,Gallery,"view, learn",No,No,ACT,"Parkes Pl E, Parkes ACT 2600",https://nga.gov.au/,,
 State Library of Western Australia,1956,Various,Library,"learn, view",No,No,WA,"25 Francis Street, Perth Cultural Centre, Perth WA 6000",https://slwa.wa.gov.au/,State Library of Western Australia,
@@ -66,13 +66,13 @@ Merrepen Arts Centre,1986,"Ngan’gikurrungurr, Ngen’giwumirri, Marrithiel, Ma
 Munupi Arts and Crafts Association,1990,Tiwi,Art Centre,"view, learn, buy",Yes,Yes,NT,"Pirlangimpi Community, Melville Island, Northern Territory 0822",https://munupiart.com/,,
 Tiwi Design,1968,Tiwi,Art Centre,"view, learn, buy",Yes,Yes,NT,"Puantulura Street, Nguiu, Bathurst Island, Northern Territory 0822",https://tiwidesigns.com/,,
 Anindilyakwa Art and Cultural Centre,2005,Anindilyakwa (warnamamalya),Art and Cultural Centre,"view, learn, buy",Yes,Yes,NT,"Shop 1, Alyangula Arcade, Groote Eylandt",https://anindilyakwaarts.com.au/,,
-Bula’bula Arts Aboriginal Corporation,1989,Yol?u,Art Centre,"view, learn, buy",Yes,Yes,NT,"19 Warrk Rd, Ramingining NT 0822, Australia",https://bulabula.com.au/pages/our-story,,
-Buku-Larrnggay Mulka Centre,1979,Yol?u,Art Centre & Museum,"view, learn, buy",Yes,Yes,NT,"138 Tuffin Road, Yirrkala NT 0880, Australia",https://yirrkala.com/,,
-Elcho Island Arts,1992,Yol?u,Art Centre,"view, learn, buy",Yes,Yes,NT,"Ganapay Parade, Galiwin’ku NT 0822",https://elchoislandarts.com/,,
-Gapuwiyak Culture and Arts Aboriginal Corporation,2007,Yol?u,Cultural Centre & Art Centre,"view, learn, buy",Yes,Yes,NT,"Lot 140 Gapuwiyak, NT 0880",https://gapuwiyak.com.au/,,
+Bula’bula Arts Aboriginal Corporation,1989,Yolgnu,Art Centre,"view, learn, buy",Yes,Yes,NT,"19 Warrk Rd, Ramingining NT 0822, Australia",https://bulabula.com.au/pages/our-story,,
+Buku-Larrnggay Mulka Centre,1979,Yolgnu,Art Centre & Museum,"view, learn, buy",Yes,Yes,NT,"138 Tuffin Road, Yirrkala NT 0880, Australia",https://yirrkala.com/,,
+Elcho Island Arts,1992,Yolgnu,Art Centre,"view, learn, buy",Yes,Yes,NT,"Ganapay Parade, Galiwin’ku NT 0822",https://elchoislandarts.com/,,
+Gapuwiyak Culture and Arts Aboriginal Corporation,2007,Yolgnu,Cultural Centre & Art Centre,"view, learn, buy",Yes,Yes,NT,"Lot 140 Gapuwiyak, NT 0880",https://gapuwiyak.com.au/,,
 Injalak Arts and Crafts,1989,Kunwinjku,Art Centre,all,Yes,Yes,NT,"Lot 383, Gunbalanya NT 0822, Australia",https://injalak.com/,,
 Maningrida Arts and Culture,1973,Maningrida Area Aboriginal Groups,Art Centre & Museum,"view, learn, buy",Yes,Yes,NT,"Lot 725, Maningrida NT 0822",https://maningrida.com/,,
-Milingimbi Art and Culture Aboriginal Corporation,1912,Yol?u,Art Centre,"view, learn, buy",Yes,Yes,NT,"Lot 53 Gadupu Rd, Milingimbi via Winnellie, NT, 0822",https://milingimbiart.com/,,
+Milingimbi Art and Culture Aboriginal Corporation,1912,Yolgnu,Art Centre,"view, learn, buy",Yes,Yes,NT,"Lot 53 Gadupu Rd, Milingimbi via Winnellie, NT, 0822",https://milingimbiart.com/,,
 Ngukurr Arts Aboriginal Corporation,1988,"Ngalakgan, Alawa, Mangarrayi, Ngandi, Marra, Warndarrang, Nunggubuyu, Ritharrngu-Wägilak, and Rembarrnga, collectivley known as Yugul Mangi",Art Centre,"view, learn, buy",Yes,Yes,NT,"Balamurra St, Ngukurr, NT 0852",https://ngukurrarts.com/,,
 Djilpin Arts,2002,Bagala clan of the Jawoyn Nation,Gallery & Museum,all,Yes,Yes,NT,"2 Cameron Road, Beswick NT 0852",https://www.djilpinarts.org.au/,,
 Godinymayin Yijard Rivers Arts and Culture Centre,2012,"Dagoman, Jawoyn, and Wardaman",Cultural Centre & Gallery,"view, learn, engage",No,No,NT,"Lot 3238 Stuart Highway, Katherine East NT 0850, Australia",https://www.gyracc.org.au/,,
@@ -121,8 +121,8 @@ Merrepen Arts Centre,Not recorded,Nauiyu / Daly River Aboriginal communities,Art
 Munupi Arts and Crafts Association,Not recorded,Tiwi,Art Centre,"buy, view, learn",Yes,Yes,NT,"Pirlangimpi Community, Melville Island NT 0822",https://www.munupiart.com,NT Government,Tiwi community
 Tiwi Design,Not recorded,Tiwi,Art Centre / Design Studio,"buy, view, learn",Yes,Yes,NT,Bathurst Island NT 0822,https://www.tiwidesign.com,NT Government,Tiwi community
 Anindilyakwa Art and Cultural Centre,Not recorded,Anindilyakwa,Art & Cultural Centre,"buy, view, learn, engage",Yes,Yes,NT,"1 Bougainvillea Drive, Groote Eylandt NT 0885",https://anindilyakwaarts.com.au,NT Government,Anindilyakwa Land Council region
-Bula'bula Arts Aboriginal Corporation,Not recorded,Yol?u,Art Centre,"buy, view, learn",Yes,Yes,NT,"19 Warrk Road, Ramingining NT 0822",https://bulabula.com.au,NT Government,Ramingining community
-Buku-Larrnggay Mulka Centre,Not recorded,Yol?u,Art Centre / Cultural Centre,"buy, view, learn, engage",Yes,Yes,NT,"138 Tuffin Road, Yirrkala NT 0880",https://yirrkala.com,NT Government,Yirrkala community
+Bula'bula Arts Aboriginal Corporation,Not recorded,Yolgnu,Art Centre,"buy, view, learn",Yes,Yes,NT,"19 Warrk Road, Ramingining NT 0822",https://bulabula.com.au,NT Government,Ramingining community
+Buku-Larrnggay Mulka Centre,Not recorded,Yolgnu,Art Centre / Cultural Centre,"buy, view, learn, engage",Yes,Yes,NT,"138 Tuffin Road, Yirrkala NT 0880",https://yirrkala.com,NT Government,Yirrkala community
 Waralungku Arts,Not recorded,"Marra, Yanyuwa, Garrawa and Gurdanji",Art Centre,"buy, view, learn",Yes,Yes,NT,"191 Robinson Road, Borroloola NT 0854",https://www.waralungku.com,NT Government,Mabunji Aboriginal Resource Association
 Nyinkka Nyunyu Art and Culture Centre,Not recorded,Warumungu,Art & Cultural Centre,"view, learn, engage",Yes,Yes,NT,"13 Paterson Street, Tennant Creek NT 0860",https://nyinkka.com.au,NT Government,Warumungu community
 Arlpwe Art and Culture Centre,Not recorded,"Warlmanpa, Warumungu, Alyawarre and Kaytetye",Art & Cultural Centre,"buy, view, learn, engage",Yes,Yes,NT,Ali Curung NT 0872,https://www.australianaboriginalartgallery.com.au/?tr_uuid=20261009-0020-3846-8989-a3e51f08dff7&fp=-7&cheq=2af22dcde85c95298e9b05680fceb51a,NT Government,Ali Curung community
@@ -149,38 +149,3 @@ Boomalli Aboriginal Artists Co-operative,1987,Aboriginal artists from NSW langua
 Waralungku Arts,2003,"Yanyuwa, Garrwa, Marra and Gudanji",Art Centre,"view, learn, buy",Yes,Yes,NT,"191 Robinson Road, Borroloola NT 0854",https://www.instagram.com/waralungku/,,
 Nyinkka Nyunyu Art and Culture Centre,1995,Warumungu ,Art and Cultural Centre,"view, learn, buy",Yes,Yes,NT,"13 Paterson Street, Tennant Creek, NT 0860",https://nyinkka.com.au/,,Julalikari Council Aboriginal Corporation
 Julalikari Arts,1974,Warumungu,Art Centre & Gallery,"view, learn, buy",Yes,Yes,NT,"232 Paterson Street, Tennant Creek, NT 0860",Not recorded,Julalikari Council Aboriginal Corporation,Julalikari Council Aboriginal Corporation
-,,,,,,,,,,,
-,,,,,,,,,,,
-,,,,,,,,,,,
-,,,,,,,,,,,
-,,,,,,,,,,,
-,,,,,,,,,,,
-,,,,,,,,,,,
-,,,,,,,,,,,
-,,,,,,,,,,,
-,,,,,,,,,,,
-,,,,,,,,,,,
-,,,,,,,,,,,
-,,,,,,,,,,,
-,,,,,,,,,,,
-,,,,,,,,,,,
-,,,,,,,,,,,
-,,,,,,,,,,,
-,,,,,,,,,,,
-,,,,,,,,,,,
-,,,,,,,,,,,
-,,,,,,,,,,,
-,,,,,,,,,,,
-,,,,,,,,,,,
-,,,,,,,,,,,
-,,,,,,,,,,,
-,,,,,,,,,,,
-,,,,,,,,,,,
-,,,,,,,,,,,
-,,,,,,,,,,,
-,,,,,,,,,,,
-,,,,,,,,,,,
-,,,,,,,,,,,
-,,,,,,,,,,,
-,,,,,,,,,,,
-,,,,,,,,,,,
